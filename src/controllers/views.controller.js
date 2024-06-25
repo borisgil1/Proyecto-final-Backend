@@ -59,8 +59,6 @@ class viewsController {
                     productId: item.product._id, 
                 }));
 
-
-                
                 const userDto = new UserDTO(req.user.first_name, req.user.last_name, req.user.email);
                 //Guardo en variable el cartId y el correo del usuario
                 const cartId = req.user.cart.toString();
@@ -103,7 +101,6 @@ class viewsController {
         res.render("admin");
     };
 
-
     async realTime(req, res) {
         res.render("realtimeproducts");
     };
@@ -122,12 +119,6 @@ class viewsController {
         const isAdmin = req.user.role === 'admin';
         res.render("profile", { user: userDto, isAdmin });
     }
-
-    //     async profile(req, res) {
-    //         const userDto = new UserDTO(req.user.first_name, req.user.last_name, req.user.role);
-    //         const admin = req.user.role === "admin";
-    //         res.render("profile", { user: userDto, admin });
-    //     }
 }
 
 module.exports = viewsController;

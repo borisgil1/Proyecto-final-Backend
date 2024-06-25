@@ -8,30 +8,21 @@ const passport = require("passport");
 const UserDTO = require("../dto/user.dto.js");
 const { passportCall } = require("../utils/util.js");
 const { authorization } = require("../utils/util.js");
+const {authorization2} = require("../utils/util.js");
 
 
 //vista products, muestra todos los productos
-//router.get("/products", passportCall("jwt"), authorization("usuario"), viewsController.renderProducts)
-router.get("/products", passport.authenticate('jwt', { session: false }), viewsController.renderProducts);
-
-//router.get("/products", viewsController.renderProducts);
+router.get("/products", passportCall("jwt"), authorization2("admin"), viewsController.renderProducts)
 
 //vista cart, muestra los productos que tiene cada carrito
 router.get("/carts/:cid", passport.authenticate("jwt", { session: false }), viewsController.renderCart);
 
 //Vista raiz app, productos
-router.get("/", viewsController.login);
+router.get("/", viewsController.home);
 
 router.get("/chat", passportCall("jwt"), authorization("usuario"), viewsController.chat)
 
 router.get("/login", viewsController.login);
-
-// router.get("/profile", passport.authenticate("jwt", { session: false }), async (req, res) => {
-//     // Aquí `req.user` debería estar definido correctamente si el usuario está autenticado
-//     const userDto = new UserDTO(req.user.first_name, req.user.last_name, req.user.role);
-//     const isAdmin = req.user.role === 'admin';
-//     res.render("profile", { user: userDto, isAdmin });
-// });
 
 router.get("/register", viewsController.register);
 
@@ -54,8 +45,5 @@ router.get("/current", passportCall("jwt"), (req, res) => {
     res.send(("profile", { Usuario: userDto, isAdmin }));
 })
 
-router.get("/current2", passportCall("jwt"), authorization("admin"), (req, res) => {
-    res.send(req.user.cart);
-})
 
 module.exports = router;

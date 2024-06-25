@@ -39,4 +39,24 @@ const authorization = (role) => {
     }
 }
 
-module.exports = { passportCall, authorization };
+const authorization2 = (role) => {
+
+    return (req, res, next) => {
+        
+    // Permitir acceso si el usuario no está autenticado
+    if (!req.user) {
+        return next();
+    }
+
+    // Permitir acceso si el usuario está autenticado y no es administrador, (admin)
+    if (req.user.role !== role) {
+        return next();
+    }
+
+    // Denegar acceso si el usuario es administrador
+    return res.status(403).send({ message: "No tienes permiso para acceder a esta ruta como administrador" });
+}} ;
+
+
+
+module.exports = { passportCall, authorization, authorization2 };
