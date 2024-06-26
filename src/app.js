@@ -10,6 +10,7 @@ const productsRouter = require("./routes/products.router.js");
 const cartsRouter = require("./routes/carts.router.js");
 const viewsRouter = require("./routes/views.router.js");
 const userRouter = require("./routes/user.router.js");
+const mockingRouter = require("./routes/mocking.js");
 //Handlebars
 const exphbs = require("express-handlebars");
 //Socket
@@ -74,7 +75,8 @@ initializePassport();
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/", viewsRouter);
-app.use("/api/users", userRouter)
+app.use("/api/users", userRouter);
+app.use("/api/mockingproducts", mockingRouter);
 
 
 //Listen
