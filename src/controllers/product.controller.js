@@ -1,18 +1,23 @@
-const ProductRepository = require("../repository/product.repository");
-const {productService} = require("../service/index");
+//Controller: Operaciones del producto. El controlador se conecta con el service. Gestiona las peticiones del cliente y las respuestas, toma información, datos del body...
+
+const { productService } = require("../service/index");
+//Errores
+const CustomError = require("../service/errors/custom-error");
+const { generateProductError } = require("../service/errors/info");
+const EErrors = require("http-errors");
 
 
 class productController {
 
     //Mostar productos
     async getProducts(req, res) {
-       try {
-        const products = await productService.getProducts();
-        return res.send(products);
-       } catch (error) {
-        console.error("Error al mostrar productos", error);
-        return res.status(500).send("Error al mostrar productos");
-       }
+        try {
+            const products = await productService.getProducts();
+            return res.send(products);
+        } catch (error) {
+            console.error("Error al mostrar productos", error);
+            return res.status(500).send("Error al mostrar productos");
+        }
     };
 
     //Mostrar productos por ID
@@ -30,32 +35,26 @@ class productController {
         }
     };
 
-    //Agregar productos
-    async addProduct(req, res) {
-        const newProduct = req.body;
-        try {
-            const product = await productService.addProduct(newProduct);
-            if (existingProduct) {
-                // Si existe un producto con el mismo código, devuelve un mensaje de error
-                return res.status(400).json({ message: "El código debe ser único" });
-            }
-            await productService.addProduct(newProduct);
-            res.status(201).send({ message: "Producto agregado exitosamente", newProduct });
-        } catch (error) {
-            console.error("Error al agregar producto", error);
-            res.status(500).json({
-                error: "Error interno del servidor"
-            });
-        }
-    };
 
-    async addProduct(req, res) {
+    //Agregar productos
+    async addProduct(req, res, next) {
         const newProduct = req.body;
         try {
+
+            //Middleware Error
+            if (!newProduct.title || !newProduct.description || !newProduct.price || !newProduct.img || !newProduct.code || !newProduct.stock || !newProduct.category || !newProduct.thumbnails) {
+                throw CustomError.createError({
+                    name: "Nuevo Producto",
+                    cause: generateProductError(newProduct),
+                    message: "Error al intentar agregar producto",
+                    code: EErrors.TIPO_INVALIDO
+                });
+            }
+
             const product = await productService.addProduct(newProduct);
-            res.json({message: "El producto ha sido agregado", product: product}); 
+            res.json({ message: "El producto ha sido agregado", product: product });
         } catch (error) {
-            res.status(400).json({ error: error.message }); 
+            next(error);
         }
     }
 

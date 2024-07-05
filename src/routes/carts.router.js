@@ -32,7 +32,5 @@ router.delete("/:cid", cartController.emptyCart);
 //Finalizar compra  
 router.post("/:cid/purchase", cartController.purchase);
 
-//Compra del carrito
-//router.post("/:cid/purchase", cartController.purchaseCart);
 
 module.exports = router;

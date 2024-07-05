@@ -3,10 +3,7 @@ const UserModel = require("../models/user.model.js");
 const jwt = require("jsonwebtoken");
 const { createHash } = require("../utils/hashbcrypt.js");
 const { isValidPassword } = require("../utils/hashbcrypt.js");
-//const UserDTO = require("../dto/user.dto.js");
 const CartsModel = require("../models/carts.model.js");
-const Cartcontroller = require("../controllers/cart.controller.js");
-const cartController = new Cartcontroller();
 
 class UserController {
 
@@ -63,6 +60,7 @@ class UserController {
         }
     }
 
+
     //Login con JWT 
     async loginJwt(req, res) {
         let { email, password } = req.body;
@@ -107,6 +105,7 @@ class UserController {
             console.log(error)
         }
     }
+
 
     //Cerrar sesion con JWT:
     async logoutJwt(req, res) {

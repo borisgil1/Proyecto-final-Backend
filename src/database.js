@@ -1,3 +1,4 @@
+//Base de datos
 const mongoose = require("mongoose");
 const configObject = require ("./config/config.js");
 const { mongo_url } = configObject;

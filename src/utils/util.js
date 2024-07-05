@@ -17,14 +17,17 @@ const passportCall = (strategy) => {
             }
             //Si no hay usuario tiramos un 401
             if (!user) {
-                res.status(401).send({ error: info.messege ? info.messege : info.toString() });
+                //req.user = null; // Usuario no autenticado
+                //return next();
+                //return res.status(401).send({ error: info.message ? info.message : info.toString() });
+                return res.status(401).send({ error: "Necesitas logearte para acceder" });
             }
             //Si marcha bien req.user guarda el usuario y avanzamos con el next
             req.user = user;
             next();
         })(req, res, next)
-    }
-}
+    };
+};
 
 
 //Autorización según el rol
@@ -36,27 +39,25 @@ const authorization = (role) => {
             return res.status(403).send({ messege: "No tienes permiso, no eres " + role });
         }
         next();
-    }
-}
+    };
+};
 
 const authorization2 = (role) => {
+    return (req, res, next) => {   
 
-    return (req, res, next) => {
-        
     // Permitir acceso si el usuario no está autenticado
     if (!req.user) {
         return next();
     }
 
-    // Permitir acceso si el usuario está autenticado y no es administrador, (admin)
-    if (req.user.role !== role) {
-        return next();
+    // Denegar acceso si el usuario es administrador
+    if (req.user.role === role) {
+        return res.status(403).send({ message: "No tienes permiso para acceder a esta ruta como administrador" });
     }
 
-    // Denegar acceso si el usuario es administrador
-    return res.status(403).send({ message: "No tienes permiso para acceder a esta ruta como administrador" });
+    // Permitir acceso si el usuario está autenticado y no es administrador
+    next();
 }} ;
-
 
 
 module.exports = { passportCall, authorization, authorization2 };

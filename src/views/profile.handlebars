@@ -42,7 +42,7 @@
           <a class="nav-link" href="/contact">Contáctanos</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/carts/666fce3d59d6103fa3c85a11">Carrito</a>
+          <a class="nav-link" href="/carts/{{user.Carrito}}">Carrito</a>
         </li>
       </ul>
     </div>
@@ -54,8 +54,8 @@
 
     <p>Bienvenido, {{user.Nombre}} {{user.Apellido}}!</p>
     <p>Rol: {{user.Rol}}</p>
-    <p>Rol: {{user.Carrito}}</p>
     <p>edad: {{user.Edad}}</p>
+    <p>edad: {{user.Carrito}}</p>
 
     <form action="/api/users/logout" method="POST">
       <button class="btn" type="submit">Logout</button>

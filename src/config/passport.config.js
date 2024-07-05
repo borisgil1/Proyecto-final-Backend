@@ -1,4 +1,4 @@
-//Estrategias de passport y JWT, son middlwares
+//Estrategias de passport y JWT, son middlwares. Autenticación y autorización
 
 const passport = require("passport");
 const UserModel = require("../models/user.model.js");

@@ -1,4 +1,4 @@
-//Views, profile   
+//Rutas para renderizar las vistas: Views, profile... 
 
 const express = require("express");
 const router = express.Router();
@@ -33,7 +33,7 @@ router.get("/admin", viewsController.admin);
 router.get("/realtimeproducts", passportCall("jwt"), authorization("admin"), viewsController.realTime)
 
 router.get("/recover", viewsController.recover)
-//router.get("/profile", passport.authenticate("jwt", { session: false }), viewsController.profile);
+
 router.get("/contact", viewsController.contact)
 
 router.get("/profile", passport.authenticate("jwt", { session: false }), viewsController.profile);
@@ -44,6 +44,5 @@ router.get("/current", passportCall("jwt"), (req, res) => {
     const isAdmin = req.user.role === 'admin';
     res.send(("profile", { Usuario: userDto, isAdmin }));
 })
-
 
 module.exports = router;

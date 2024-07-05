@@ -19,7 +19,10 @@ class viewsController {
             })
 
             //Paso el user DTO a la vista
-            const userDto = new UserDTO(req.user.first_name, req.user.last_name, req.user.role, req.user.cart.toString(), req.user.age);
+            const userDto = new UserDTO(req.user.first_name, req.user.last_name, req.user.role, req.user.cart, req.user.age);
+            // const userDto = req.user ? 
+            //     new UserDTO(req.user.first_name, req.user.last_name, req.user.role, req.user.cart ? req.user.cart.toString() : '', req.user.age) 
+            //     : null;
 
             res.render("products", {
                 products: final,
@@ -37,7 +40,7 @@ class viewsController {
         }
     };
 
-    //vista cart, muestra los productos que tiene cada carrito
+    //Vista cart, muestra los productos que tiene cada carrito
     async renderCart(req, res) {
         let cid = req.params.cid;
         try {
@@ -91,7 +94,6 @@ class viewsController {
     async home(req, res) {
         res.render("home");
     };
-
 
     async admin(req, res) {
         // Verificar si no hay usuario en la sesión o si el rol del usuario no es "admin"

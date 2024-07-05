@@ -4,7 +4,6 @@
 const express = require("express");
 //Creamos nuestra app
 const app = express();
-const PUERTO = 8080;
 //Rutas
 const productsRouter = require("./routes/products.router.js");
 const cartsRouter = require("./routes/carts.router.js");
@@ -15,11 +14,9 @@ const mockingRouter = require("./routes/mocking.js");
 const exphbs = require("express-handlebars");
 //Socket
 const socket = require("socket.io");
-//Repository
+//Repository para la vista realTimeProducts
 const ProductRepository = require("./repository/product.repository.js");
 const productRepository = new ProductRepository();
-const CartRepository = require("./repository/cart.repository.js");
-const cartRepository = new CartRepository();
 //Base de datos
 require("./database.js");
 //Chat
@@ -37,18 +34,22 @@ const passport = require("passport");
 const initializePassport = require("./config/passport.config.js");
 //Config Object
 const configObject = require("./config/config.js")
-const { mongo_url, port } = configObject;
+const { port } = configObject;
 //Program
 //const program = require ("program");
 //Nodemailer: Permite reliazar el envio de mensajería desde nuestra app
 const nodemailer = require("nodemailer");
-const productController = require("./controllers/product.controller.js");
+//Middleware - Error
+const errorMiddleware = require("./middleware/error.js");
+//Logger
+const  addLogger  = require("./utils/logger.js");
 
 
 //Handlebar
 app.engine("handlebars", exphbs.engine());
 app.set("view engine", "handlebars");
 app.set("views", "./src/views");
+
 
 //Middleware
 app.use(express.json())
@@ -77,11 +78,25 @@ app.use("/api/carts", cartsRouter);
 app.use("/", viewsRouter);
 app.use("/api/users", userRouter);
 app.use("/api/mockingproducts", mockingRouter);
+//Middleware
+app.use(errorMiddleware);
+//Logger
+app.use(addLogger)
+
+
+//Logger
+app.get("/loggertest", (req, res) => {
+    req.logger.http("mensaje http");
+    req.logger.info("mensaje info");
+    req.logger.warning("mensaje WARNING");      
+    req.logger.error("mensaje ERROR");
+    res.send("Logs generados");
+ });
 
 
 //Listen
-const httpServer = app.listen(PUERTO, () => {
-    console.log(`Escuchando en el puerto ${PUERTO}`);
+const httpServer = app.listen(port, () => {
+    console.log(`Escuchando en el puerto ${port}`);
 })
 
 
@@ -138,7 +153,7 @@ io.on("connection", async (socket) => {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+//Envio de correos
 app.post("/mail", async (req, res) => {
     const { email, subject, message } = req.body;
     try {

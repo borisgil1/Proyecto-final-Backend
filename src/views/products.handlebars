@@ -50,7 +50,7 @@
           <a class="nav-link" href="/contact">Contáctanos</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/carts/666fce3d59d6103fa3c85a11">Carrito</a>
+          <a class="nav-link" href="/carts/{{user.Carrito}}">Carrito</a>
         </li>
       </ul>
     </div>
@@ -69,7 +69,6 @@
                 <div class="card-body">
                     <h4 class="card-title">{{this.title}}</h4>
                     <h5>${{this.price}}</h5>
-                    <h5>${{this._id}}</h5>
                     <p class="card-text">{{this.description}}</p>
                        <form action="/api/carts/{{../user.Carrito}}/products/{{this._id}}" method="POST">
                     <button class="btnAddtoCart" onclick="addToCart('{{this._id}}')"
