@@ -67,6 +67,7 @@ const loggerPro = winston.createLogger({
 //Configuracion de logger dependiendo a la variable de entorno
 const logger = node_env === "production" ? loggerPro : loggerDes
 
+
 //Middleware
 const addLogger = (req, res, next) => {
     //req.logger es igual a mi logger de la linea 68
@@ -76,4 +77,5 @@ const addLogger = (req, res, next) => {
     next();
 }
 
-module.exports = addLogger;
+module.exports = { addLogger, logger };
+

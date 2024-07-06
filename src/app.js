@@ -42,7 +42,7 @@ const nodemailer = require("nodemailer");
 //Middleware - Error
 const errorMiddleware = require("./middleware/error.js");
 //Logger
-const  addLogger  = require("./utils/logger.js");
+const {addLogger} = require("./utils/logger.js");
 
 
 //Handlebar
@@ -72,19 +72,21 @@ app.use(passport.session());
 initializePassport();
 
 
+//Middleware - Logger
+app.use(addLogger);
+
+
 //Rutas
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/", viewsRouter);
 app.use("/api/users", userRouter);
 app.use("/api/mockingproducts", mockingRouter);
-//Middleware
+//Middleware - error
 app.use(errorMiddleware);
-//Logger
-app.use(addLogger)
 
 
-//Logger
+// Ruta de prueba para logs
 app.get("/loggertest", (req, res) => {
     req.logger.http("mensaje http");
     req.logger.info("mensaje info");

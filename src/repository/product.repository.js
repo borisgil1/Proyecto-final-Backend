@@ -1,6 +1,6 @@
 //Repository: Se conecta con la bdd, con la persistencia de la información
 const ProductsModel = require("../models/products.model");
-const logger = require("../utils/logger.js");
+const {logger} = require("../utils/logger.js");
 
 class ProductRepository {
     async addProduct({title, description, price, img, code, stock, category, thumbnails}) { 
