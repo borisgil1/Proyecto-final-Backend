@@ -1,5 +1,4 @@
 //Repository: Se conecta con la bdd, con la persistencia de la información
-
 const CartsModel = require("../models/carts.model");
 const ProductsModel = require("../models/products.model");
 
@@ -140,7 +139,5 @@ class CartRepository {
         }
     }
 }
-
-
 
 module.exports = CartRepository;

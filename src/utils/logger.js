@@ -69,7 +69,7 @@ const logger = node_env === "production" ? loggerPro : loggerDes
 
 //Middleware
 const addLogger = (req, res, next) => {
-    //req.logger es igual a mi logger de la linea 5
+    //req.logger es igual a mi logger de la linea 68
     req.logger = logger;
     //logger.http es un metodo de mi logger. method = get. url = ruta
     req.logger.http(`${req.method} en ${req.url} - ${new Date().toLocaleDateString()}`);
