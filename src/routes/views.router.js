@@ -12,7 +12,7 @@ const {authorization2} = require("../utils/util.js");
 
 
 //vista products, muestra todos los productos
-router.get("/products", passportCall("jwt"), authorization("Usuario"), viewsController.renderProducts)
+router.get("/products", passportCall("jwt"), authorization2("admin"), viewsController.renderProducts)
 
 //vista cart, muestra los productos que tiene cada carrito
 router.get("/carts/:cid", passportCall("jwt", { session: false }), viewsController.renderCart);
