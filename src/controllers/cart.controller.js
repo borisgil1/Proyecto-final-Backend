@@ -16,8 +16,19 @@ class cartController {
             await cartService.addCart(newCart);
             return res.status(201).send({ message: "Carrito nuevo agregado", newCart });
         } catch (error) {
-            console.error("Error al crear nuevo carrito", error);
+            req.logger.error("Error al crear nuevo carrito", error);
             return res.status(500).send("Error al crear nuevo carrito");
+        }
+    };
+
+    //Mostrar todos los carritos
+    async getCarts(req, res) {
+        try {
+            const carts = await cartService.getCarts();
+            return res.status(200).json({ message: "Carritos encontrados", carts });
+        } catch (error) {
+            req.logger.error("Error al mostrar carritos", error);
+            return res.status(500).json({ message: "Error al mostrar carritos" });
         }
     };
 
@@ -32,18 +43,8 @@ class cartController {
                 return res.status(404).send("Carrito no encontrado")
             }
         } catch (error) {
-            console.error("Error al mostrar carrito", error);
+            req.logger.error("Error al mostrar carrito", error);
             return res.status(500).send("Error al mostrar carrito");
-        }
-    };
-
-    //Mostrar todos los carritos
-    async getCarts(req, res) {
-        try {
-            const carts = await cartService.getCarts();
-            return res.status(200).json({ message: "Carritos encontrados", carts });
-        } catch (error) {
-            return res.status(500).json({ message: "Error al mostrar carritos" });
         }
     };
 
@@ -56,7 +57,7 @@ class cartController {
             const cartUpdated = await cartService.addProductToCart(cid, pid, quantity)
             return res.status(200).json({ message: "Producto agregado al carrito con éxito", cart: cartUpdated });
         } catch (error) {
-            console.error("Error al agregar producto al carrito:", error);
+            req.logger.error("Error al agregar producto al carrito:", error);
             return res.status(500).send("Error al agregar producto al carrito:");
         }
     };
@@ -72,6 +73,7 @@ class cartController {
             }
             return res.status(200).send({ message: "Producto eliminado del carrito", cart: cartUpdated });
         } catch (error) {
+            req.logger.error("Error al eliminar producto del carrito:", error);
             return res.status(500).send("Error al eliminar producto del carrito");
         }
     }
@@ -87,6 +89,7 @@ class cartController {
             }
             return res.status(200).send({ message: "Carrito modificado", cart: cartUpdated });
         } catch (error) {
+            req.logger.error("Error al modificar el carrito:", error);
             return res.status(500).send("Error al modificar el carrito");
         }
     }
@@ -100,6 +103,7 @@ class cartController {
             const cartUpdated = await cartService.updateQuantity(cid, pid, quantity);
             return res.status(200).send({ message: "Cantidad del producto actualizada", cart: cartUpdated });
         } catch (error) {
+            req.logger.error("Error al modificar el carrito:", error);
             return res.status(500).send("Error al modificar el carrito");
         }
     }
@@ -114,6 +118,7 @@ class cartController {
             }
             return res.status(200).send({ message: "Todos los productos del carrito han sido eliminados", cart: updatedCart });
         } catch (error) {
+            req.logger.error("Error al vaciar el carrito:", error);
             return res.status(500).send("Error al vaciar el carrito");
         }
     };
@@ -134,6 +139,7 @@ async purchase(req, res) {
         // Obtenemos el carrito por su id
         const cart = await cartService.getCartById(cid);
         if (!cart) {
+            req.logger.error("Carrito no encontrado");
             return res.status(404).send({ message: "Carrito no encontrado" });
         }
 
@@ -163,6 +169,7 @@ async purchase(req, res) {
             const updatedProduct = await productService.updateProduct(pid, { $inc: { stock: -quantity } });
 
             if (!updatedProduct) {
+                req.logger.error(`Error al actualizar el stock del producto con ID ${pid}`);
                 return res.status(404).send({ message: `Producto con ID ${pid} no encontrado` });
             }
         }
@@ -176,7 +183,7 @@ async purchase(req, res) {
             totalAmount = productsInStock.reduce((acc, item) => {
                 const productInCart = cart.products.find(p => p.product._id.toString() === item.product._id.toString());
                 if (!productInCart || !productInCart.product || !productInCart.product.price) {
-                    console.error("Producto en carrito sin precio:", productInCart);
+                    req.logger.error("Producto en carrito sin precio:", productInCart);
                     return acc;
                 }
 
@@ -205,6 +212,7 @@ async purchase(req, res) {
             // Vaciamos el carrito
             const emptyCart = await cartService.emptyCart(cid);
             if (!emptyCart) {
+                req.logger.error("Error al vaciar el carrito");
                 return res.status(404).send({ message: "Carrito no encontrado" });
             }
 
@@ -220,10 +228,12 @@ async purchase(req, res) {
             });
 
         } else {
+            req.logger.info("No hay productos en el carrito");
             return res.status(400).json({ message: "No se pueden comprar los productos seleccionados", ProductosSinStock: outOfStockProducts });
         }
 
     } catch (error) {
+        req.logger.error("Error al procesar la compra:", error);
         return res.status(500).send("Error al procesar la compra: " + error);
     }
 

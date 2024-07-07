@@ -7,7 +7,6 @@ const UserDTO = require("../dto/user.dto.js");
 
 //Vista productos
 class viewsController {
-
     async renderProducts(req, res) {
         const page = parseInt(req.query.page) || 1;
         const limit = 9;
@@ -36,6 +35,7 @@ class viewsController {
             });
 
         } catch (error) {
+            req.logger.error("Error interno del servidor", error)
             res.status(500).json({ error: "Error interno del servidor" + error });
         }
     };
@@ -70,10 +70,11 @@ class viewsController {
                 res.render("carts", { products: productsInCar, totalPrice, email, user: userDto, cartId});
 
             } else {
+                req.logger.error("Carrito no encontrado");
                 return res.status(404).send("Carrito no encontrado")
             }
         } catch (error) {
-            console.error("Error al mostrar carrito", error);
+            req.logger.error("Error al mostrar carrito", error);
             return res.status(500).send("Error al mostrar carrito");
         }
     };
@@ -98,6 +99,7 @@ class viewsController {
     async admin(req, res) {
         // Verificar si no hay usuario en la sesión o si el rol del usuario no es "admin"
         if (!req.session.user || req.session.user.role !== "admin") {
+            req.logger.warning("Acceso denegado, no eres admin");
             return res.status(403).send("Acceso denegado, no eres admin");
         }
         res.render("admin");

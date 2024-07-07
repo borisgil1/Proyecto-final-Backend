@@ -4,12 +4,11 @@ const jwt = require("jsonwebtoken");
 const { createHash } = require("../utils/hashbcrypt.js");
 const { isValidPassword } = require("../utils/hashbcrypt.js");
 const CartsModel = require("../models/carts.model.js");
+const { addLogger } = require("../utils/logger.js");
 
 class UserController {
-
     //Registro con JWT
     async registerJwt(req, res) {
-
         let { first_name, last_name, email, password, age } = req.body;
 
         try {
@@ -18,10 +17,11 @@ class UserController {
 
             //si es usuario existe
             if (existingUser) {
+                req.logger.warning("El usuario ya existe")
                 return res.status(400).send("El usuario ya existe")
             }
 
-             //Creamos carrito asosiado al usuario y lo guardo
+            //Creamos carrito asosiado al usuario y lo guardo
             const cart = new CartsModel()
             await cart.save();
 
@@ -55,8 +55,8 @@ class UserController {
             res.redirect("/profile");
 
         } catch (error) {
+            req.logger.error("Error interno del servidor", error)
             res.status(500).send("Error interno del servidor")
-            console.log(error)
         }
     }
 
@@ -64,19 +64,20 @@ class UserController {
     //Login con JWT 
     async loginJwt(req, res) {
         let { email, password } = req.body;
-        try {
 
+        try {
             //verificacion si exite usuario con ese mail
             let user = await UserModel.findOne({ email });
 
             //Si no existe el usuario retorna error
             if (!user) {
-                console.log("Este usuario no existe");
+                req.logger.warning("Este usuario no existe");
                 return res.status(400).send("El usuario no existe");
             }
 
             //si existe verifico la contraseña
             if (!isValidPassword(password, user)) {
+                req.logger.warning("Contraseña incorrecta");
                 return res.status(401).send("Contraseña incorrecta");
             }
 
@@ -101,8 +102,8 @@ class UserController {
             res.redirect("/profile");
 
         } catch (error) {
+            req.logger.error("Error interno del servidor", error)
             res.status(500).send("Error interno del servidor")
-            console.log(error)
         }
     }
 
@@ -139,7 +140,7 @@ class UserController {
             // Redirijo al perfil
             res.redirect("/profile");
         } catch (error) {
-            console.error('Error en el callback de GitHub:', error);
+            req.error, logger('Error en el callback de GitHub:', error);
             res.status(500).send('Error interno del servidor');
         }
     };
@@ -153,23 +154,8 @@ class UserController {
     }
 
     async products(req, res) {
-                    res.render("products");
+        res.render("products");
     }
-    //Ruta admin
-    // async admin(req, res) {
-    //     // Asegúrate de que req.user contiene la información del usuario autenticado
-    //     if (!req.user || req.user.role !== "admin") {
-    //         return res.status(403).send("Acceso denegado");
-    //     }
-    //     res.render("admin");
-    // }
-
-
-    //Ruta current 
-
-    // router.get("/home", passport.authenticate("jwt", { session: false }), (req, res) => {
-    //     res.render("home", { usuario: req.user.email });
-    // })
 }
 
 

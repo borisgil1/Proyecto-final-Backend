@@ -13,10 +13,9 @@ class productController {
         async getProducts(req, res) {
         try {
             const products = await productService.getProducts();
-            //req.logger.info("Productos recuperados exitosamente", { count: products.length });
-            return res.send(products);
+            return res.send({messege: "Productos recuperados exitosamente", products});
         } catch (error) {
-           // req.logger.error("Error al mostrar productos", error);
+            req.logger.error("Error al mostrar productos", error);
             return res.status(500).send("Error al mostrar productos");
         }
     };
@@ -27,14 +26,12 @@ class productController {
         try {
             const product = await productService.getProductById(id);
             if (product) {
-                //req.logger.info("Producto encontrado exitosamente", product);
                 return res.status(201).send({ message: "Producto encontrado exitosamente", product });
             } else {
-                //req.logger.warn("Producto no encontrado");
                 return res.send("Producto no encontrado");
             }
         } catch (error) {
-            //req.logger.error("Error al encontrar el producto", error);
+            req.logger.error("Error al encontrar el producto", error);
             return res.status(500).send("Error al encontrar el producto");
         }
     };
@@ -56,6 +53,7 @@ class productController {
             //req.logger.info("El nuevo producto ha sido agregado exitosamente", product);
             res.json({ message: "El producto ha sido agregado", product: product });
         } catch (error) {
+            req.logger.error("Error al agregar nuevo producto", error);
             next(error);
         }
     }
@@ -67,13 +65,11 @@ class productController {
         try {
             const productUpdated = await productService.updateProduct(id, { title, description, price, img, code, stock, category });
             if (!productUpdated) {
-               // req.logger.warn("Producto no encontrado");
                 return res.status(500).send({ message: "Producto no encontrado" });
             }
-            //req.logger.info("Producto actualizado:", productUpdated);
             return res.status(200).send({ message: "Producto actualizado", product: productUpdated });
         } catch (error) {
-            //req.logger.error("Error al actualizar producto:", error);
+            req.logger.error("Error al actualizar producto:", error);
             return res.status(500).send("Error al actualizar producto");
         }
     }
@@ -84,13 +80,11 @@ class productController {
         try {
             const productToDelete = await productService.deleteProduct(id);
             if (!productToDelete) {
-                //req.logger.warn("Producto no encontrado");
                 return res.status(404).send({ message: "Producto no encontrado" });
             }
-           // req.logger.info("Producto eliminado:", productToDelete);
             return res.status(200).send({ message: "Producto eliminado correctamente", product: productToDelete });
         } catch (error) {
-           // req.logger.error("Error al eliminar el producto:", error);
+            req.logger.error("Error al eliminar el producto:", error);
             return res.status(500).send("Error al eliminar el producto");
         }
     }
