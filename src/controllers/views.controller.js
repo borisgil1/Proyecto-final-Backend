@@ -3,7 +3,7 @@ const CartRepository = require("../repository/cart.repository.js");
 const ProductsModel = require("../models/products.model.js");
 const cartRepository = new CartRepository();
 const UserDTO = require("../dto/user.dto.js");
-
+const { addLogger } = require("../utils/logger.js");
 
 //Vista productos
 class viewsController {

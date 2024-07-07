@@ -12,15 +12,15 @@ const {authorization2} = require("../utils/util.js");
 
 
 //vista products, muestra todos los productos
-router.get("/products", passportCall("jwt"), authorization2("admin"), viewsController.renderProducts)
+router.get("/products", passportCall("jwt"), authorization("Usuario"), viewsController.renderProducts)
 
 //vista cart, muestra los productos que tiene cada carrito
-router.get("/carts/:cid", passport.authenticate("jwt", { session: false }), viewsController.renderCart);
+router.get("/carts/:cid", passportCall("jwt", { session: false }), viewsController.renderCart);
 
 //Vista raiz app, productos
 router.get("/", viewsController.home);
 
-router.get("/chat", passportCall("jwt"), authorization("usuario"), viewsController.chat)
+router.get("/chat", passportCall("jwt"), authorization("Usuario"), viewsController.chat)
 
 router.get("/login", viewsController.login);
 
@@ -30,13 +30,13 @@ router.get("/home", viewsController.home);
 
 router.get("/admin", viewsController.admin);
 
-router.get("/realtimeproducts", passportCall("jwt"), authorization("admin"), viewsController.realTime)
+router.get("/realtimeproducts", passportCall("jwt"), authorization("Administrador"), viewsController.realTime)
 
 router.get("/recover", viewsController.recover)
 
 router.get("/contact", viewsController.contact)
 
-router.get("/profile", passport.authenticate("jwt", { session: false }), viewsController.profile);
+router.get("/profile", passportCall("jwt", { session: false }), viewsController.profile);
 
 //A esta ruta hay ponerle un DTO para que solo mande nombre, apellido y rol
 router.get("/current", passportCall("jwt"), (req, res) => {

@@ -3,6 +3,7 @@
 //Controlar los errores, la autenticación del usuario y errores
 
 const passport = require("passport");
+const { addLogger } = require("../utils/logger.js").addLogger;
 
 //Remplazo el middleware nativo por este customizado
 //Recibo la estrategia como parametro
@@ -20,6 +21,7 @@ const passportCall = (strategy) => {
                 //req.user = null; // Usuario no autenticado
                 //return next();
                 //return res.status(401).send({ error: info.message ? info.message : info.toString() });
+                req.logger.warning("Necesitas logearte para acceder");
                 return res.status(401).send({ error: "Necesitas logearte para acceder" });
             }
             //Si marcha bien req.user guarda el usuario y avanzamos con el next
@@ -36,7 +38,8 @@ const authorization = (role) => {
     return async (req, res, next) => {
         //Si en el usuario q tenemos cargado el rol no coincide con el rol que yo estoy pasando por parametro mensaje negativo
         if (req.user.role !== role) {
-            return res.status(403).send({ messege: "No tienes permiso, no eres " + role });
+            req.logger.warning("No tienes permiso para acceder a esta ruta, no tienes el rol de  " + role);
+            return res.status(403).send({ messege: "No tienes permiso para acceder a esta ruta, no tienes el rol de " + role });
         }
         next();
     };
@@ -52,6 +55,7 @@ const authorization2 = (role) => {
 
     // Denegar acceso si el usuario es administrador
     if (req.user.role === role) {
+        req.logger.warning("No tienes permiso para acceder a esta ruta como administrador");
         return res.status(403).send({ message: "No tienes permiso para acceder a esta ruta como administrador" });
     }
 
