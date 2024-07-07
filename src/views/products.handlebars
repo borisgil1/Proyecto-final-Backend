@@ -5,91 +5,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página de Inicio</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="js/main.js"></script>
-     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <style>
         body {
             background-color: #f3e5f5;
             color: #4a148c;
         }
 
-    .navbar {
-        background-color: #6a1b9a;
-        padding: 5px;
-        /* Adjusting the padding to make the navbar smaller */
-    }
-</style>
+        .navbar {
+            background-color: #6a1b9a;
+            padding: 5px;
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
-    <a class="navbar-brand" href="#">
-      <img src="img/logo.PNG" alt="Logo" width="180" height="80" class="d-inline-block align-top">
-    </a>
-    <div class="navbar-center">Boris Gamer</div>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" href="/products">Tienda</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/login">Login</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/profile">Mi Perfil</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/chat">Chat</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/contact">Contáctanos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/carts/{{user.Carrito}}">Carrito</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
+        <a class="navbar-brand" href="#">
+            <img src="img/logo.PNG" alt="Logo" width="180" height="80" class="d-inline-block align-top">
+        </a>
+        <div class="navbar-center">Boris Gamer</div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/products">Tienda</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/profile">Mi Perfil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/chat">Chat</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/contact">Contáctanos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/carts/{{user.Carrito}}">Carrito</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
-<p>Bienvenido, {{user.Nombre}} {{user.Apellido}}!</p>
+    <p>Bienvenido, {{user.Nombre}} {{user.Apellido}}!</p>
 
-<div class="container">
-    <h1 class="mt-4 mb-3">Productos</h1>
-    <a href="/carts/{{cartId}}" class="ms-5"></a>
-    <div class="row">
-        {{#each products}}
-        <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card h-100">
-                <img class="card-img-top" src="{{this.img}}" alt="">
-                <div class="card-body">
-                    <h4 class="card-title">{{this.title}}</h4>
-                    <h5>${{this.price}}</h5>
-                    <p class="card-text">{{this.description}}</p>
-                       <form action="/api/carts/{{../user.Carrito}}/products/{{this._id}}" method="POST">
-                    <button class="btnAddtoCart" onclick="addToCart('{{this._id}}')"
-                        data-id="{{this._id}}">Agregar
-                        al carrito</button>
-                </form>
+    <div class="container">
+        <h1 class="mt-4 mb-3">Productos</h1>
+        <div class="row">
+            {{#each products}}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100">
+                    <img class="card-img-top" src="{{this.img}}" alt="">
+                    <div class="card-body">
+                        <h4 class="card-title">{{this.title}}</h4>
+                        <h5>${{this.price}}</h5>
+                        <p class="card-text">{{this.description}}</p>
+                        <form id="addToCartForm_{{this._id}}" action="/api/carts/{{../user.Carrito}}/products/{{this._id}}" method="POST">
+                            <input type="number" name="quantity" value="1" min="1"> <!-- Input para la cantidad -->
+                            <button type="button" class="btnAddtoCart" onclick="addToCart('{{this._id}}', '{{this.title}}')">Agregar al carrito</button>
+                        </form>
+                    </div>
                 </div>
             </div>
+            {{/each}}
         </div>
-        {{/each}}
     </div>
-</div>
 
-{{#if hasPrevPage}}
-<a href="/products?page={{prevPage}}">Anterior</a>
-{{/if}}
+    {{#if hasPrevPage}}
+    <a href="/products?page={{prevPage}}">Anterior</a>
+    {{/if}}
 
-{{#if hasNextPage}}
-<a href="/products?page={{nextPage}}">Siguiente</a>
-{{/if}}
+    {{#if hasNextPage}}
+    <a href="/products?page={{nextPage}}">Siguiente</a>
+    {{/if}}
 
-<p>Página {{currentPage}} de {{totalPages}}</p>
+    <p>Página {{currentPage}} de {{totalPages}}</p>
+
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        function addToCart(productId, productName) {
+            const form = document.getElementById(`addToCartForm_${productId}`);
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                Toastify({
+                    text: `${productName} agregado al carrito`, // Mensaje dinámico con el nombre del producto
+                    duration: 3000, // Duración de la alerta en milisegundos
+                    close: true,
+                    backgroundColor: "linear-gradient(to right, #6a1b9a, #9c27b0)", // Color morado
+                    position: 'left', // Posición izquierda
+                    gravity: 'bottom' // Alinear en la parte inferior
+                }).showToast();
+
+                console.log(data); // Puedes ver la respuesta del servidor en la consola
+            })
+            .catch(error => {
+                console.error('Error al agregar producto al carrito:', error);
+            });
+        }
+    </script>
 </body>
 </html>

@@ -41,10 +41,9 @@ class cartController {
     async getCarts(req, res) {
         try {
             const carts = await cartService.getCarts();
-            return res.status(200).send(carts);
+            return res.status(200).json({ message: "Carritos encontrados", carts });
         } catch (error) {
-            console.error("Error al mostrar carritos:", error);
-            return res.status(500).send("Error al mostrar carritos")
+            return res.status(500).json({ message: "Error al mostrar carritos" });
         }
     };
 
@@ -55,7 +54,7 @@ class cartController {
         const quantity = req.body.quantity || 1;
         try {
             const cartUpdated = await cartService.addProductToCart(cid, pid, quantity)
-            //return res.status(200).send({ message: "Producto agregado al carrito con éxito", cart: cartUpdated });
+            return res.status(200).json({ message: "Producto agregado al carrito con éxito", cart: cartUpdated });
         } catch (error) {
             console.error("Error al agregar producto al carrito:", error);
             return res.status(500).send("Error al agregar producto al carrito:");
@@ -63,41 +62,31 @@ class cartController {
     };
 
     //Eliminar producto de carrito
-    async deleteCartProduct(req, res) {
-        let cid = req.params.cid;
-        let pid = req.params.pid;
+    async deleteProductFromCart(req, res) {
+        const cid = req.params.cid;
+        const pid = req.params.pid;
         try {
-            const foundCart = await cartService.getCartById(cid)
-            if (!foundCart || !pid) {
-                return res.status(404).send({ message: "Carrito o producto no encontrado" });
+            const cartUpdated = await cartService.deleteProductFromCart(cid, pid);
+            if (!cartUpdated) {
+                return res.status(404).send({ message: "Carrito no encontrado" });
             }
-            const productIndex = foundCart.products.findIndex(product => product.product.equals(pid));
-            foundCart.products.splice(productIndex, 1);
-            await foundCart.save();
-            console.log("Producto eliminado:", foundCart);
-            return res.status(200).send({ message: "Producto eliminado del carrito con éxito", updatedCart: foundCart });
+            return res.status(200).send({ message: "Producto eliminado del carrito", cart: cartUpdated });
         } catch (error) {
-            console.error("Error al eliminar el producto:", error);
-            return res.status(500).send("Error al eliminar el producto");
+            return res.status(500).send("Error al eliminar producto del carrito");
         }
     }
 
-    //Actualizar productos del carrito
+    //Actualizar la cantidad de los productos en el carrito
     async updateCartProducts(req, res) {
         const cid = req.params.id;
-        console.log(cid)
         const { product, quantity } = req.body;
-        console.log("Productos recibidos:", product);
-        console.log("Cantidad recibida:", quantity);
         try {
             const cartUpdated = await cartService.updateCart(cid, { product, quantity });
             if (!cartUpdated) {
                 return res.status(404).send({ message: "Carrito no encontrado" });
             }
-            //console.log("Carrito modificado:", cartUpdated);
             return res.status(200).send({ message: "Carrito modificado", cart: cartUpdated });
         } catch (error) {
-            //console.error("Error al modificar el carrito:", error);
             return res.status(500).send("Error al modificar el carrito");
         }
     }
@@ -109,7 +98,7 @@ class cartController {
         const quantity = req.body.quantity;
         try {
             const cartUpdated = await cartService.updateQuantity(cid, pid, quantity);
-            return res.status(200).send({ message: "Cantidad del producto modifiactualizada", cart: cartUpdated });
+            return res.status(200).send({ message: "Cantidad del producto actualizada", cart: cartUpdated });
         } catch (error) {
             return res.status(500).send("Error al modificar el carrito");
         }

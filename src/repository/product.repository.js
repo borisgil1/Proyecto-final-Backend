@@ -1,40 +1,40 @@
 //Repository: Se conecta con la bdd, con la persistencia de la información
 const ProductsModel = require("../models/products.model");
-const {logger} = require("../utils/logger.js");
+const { logger } = require("../utils/logger.js");
 
 class ProductRepository {
-    async addProduct({title, description, price, img, code, stock, category, thumbnails}) { 
+    async addProduct({ title, description, price, img, code, stock, category, thumbnails }) {
         try {
-            if(!title|| !description || !price || !code || !stock || !category) {
+            if (!title || !description || !price || !code || !stock || !category) {
                 logger.error("Todos los campos son obligatorios");
-                return; 
+                return;
             }
-            const existingProduct = await ProductsModel.findOne({code: code});
-            if(existingProduct) {
-                throw new Error("El código debe ser único"); 
+            const existingProduct = await ProductsModel.findOne({ code: code });
+            if (existingProduct) {
+                throw new Error("El código debe ser único");
             }
             const newProduct = new ProductsModel({
-                title, 
-                description, 
-                price, 
-                img, 
+                title,
+                description,
+                price,
+                img,
                 code,
-                stock, 
-                category, 
-                status: true, 
+                stock,
+                category,
+                status: true,
                 thumbnails: thumbnails || []
             });
-            await newProduct.save(); 
-            logger.info("Producto agregado exitosamente", newProduct);
+            await newProduct.save();
+            logger.info(`Producto agregado exitosamente: ${JSON.stringify(newProduct.toObject(), null, 2)}`);
             return newProduct;
         } catch (error) {
             logger.error("Error al agregar un producto", error);
-            throw error; 
+            throw error;
         }
     }
 
 
-   async getProducts() {
+    async getProducts() {
         try {
             const products = await ProductsModel.find();
             logger.info("Productos recuperados exitosamente", { count: products.length });
@@ -49,10 +49,10 @@ class ProductRepository {
         try {
             const product = await ProductsModel.findById(id);
             if (!product) {
-                logger.warn(`Producto con ID "${id}" no encontrado`);
+                logger.warning(`Producto con ID "${id}" no encontrado`);
                 return null;
             } else {
-               logger.info("Producto no encontrado:", product);
+                logger.info(`Producto encontrado exitosamente: ${JSON.stringify(product.toObject(), null, 2)}`);
                 return product;
             }
         } catch (error) {
@@ -65,10 +65,10 @@ class ProductRepository {
         try {
             const updatedProduct = await ProductsModel.findByIdAndUpdate(id, updatedFields, { new: true });
             if (!updatedProduct) {
-                logger.warn("Producto no encontrado");
+                logger.warning("Producto no encontrado");
                 return null;
             }
-            console.log("Producto actualizado correctamente:", updatedProduct);
+            logger.info(`Producto actualizado exitosamente: ${JSON.stringify(updatedProduct.toObject(), null, 2)}`);
             return updatedProduct;
         } catch (error) {
             logger.error("Error al actualizar Producto:", error);
@@ -80,10 +80,10 @@ class ProductRepository {
         try {
             const deletedProduct = await ProductsModel.findByIdAndDelete(id);
             if (!deletedProduct) {
-                logger.console.warn("Producto no encontrado");
+                logger.warning("Producto no encontrado");
                 return null;
             }
-            logger.info("Producto eliminado correctamente:", deletedProduct);
+            logger.info(`Producto eliminado exitosamente: ${JSON.stringify(deletedProduct.toObject(), null, 2)}`);
             return deletedProduct;
         } catch (error) {
             logger.error("Error al eliminar Producto:", error);

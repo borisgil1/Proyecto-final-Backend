@@ -1,7 +1,7 @@
 //Repository: Se conecta con la bdd, con la persistencia de la información
 const CartsModel = require("../models/carts.model");
 const ProductsModel = require("../models/products.model");
-const {logger} = require("../utils/logger.js");
+const { logger } = require("../utils/logger.js");
 
 class CartRepository {
     async addCart(newCartData) {
@@ -17,7 +17,7 @@ class CartRepository {
     async getCarts() {
         try {
             const carts = await CartsModel.find();
-            logger.info("Carritos encontrados:", carts);
+            logger.info(`Carritos encontrados: ${JSON.stringify(carts, null, 2)}`);
             return carts;
         } catch (error) {
             logger.error("Error al obtener los carritos:", error);
@@ -28,13 +28,14 @@ class CartRepository {
         try {
             const cart = await CartsModel.findById(id);
             if (!cart) {
-                logger.warn(`Carrito con ID "${id}" no encontrado`);
+                logger.warning(`Carrito con ID "${id}" no encontrado`);
                 return null;
             } else {
+                logger.info(`Carrito encontrado exitosamente: ${JSON.stringify(cart, null, 2)}`);
                 return cart;
             }
         } catch (error) {
-                logger.error("Error al encontrar carrito por ID:", error);
+            logger.error("Error al encontrar carrito por ID:", error);
         }
     }
 
@@ -43,12 +44,12 @@ class CartRepository {
         try {
             const cart = await CartsModel.findById(cartId);
             if (!cart) {
-                logger.warn(`Carrito con ID "${cartId}" no encontrado`);
+                logger.warning(`Carrito con ID "${cartId}" no encontrado`);
                 throw new Error("Carrito no encontrado");
             }
             cart.products = updatedProducts;
             await cart.save();
-            logger.info("Carrito actualizado correctamente", cart);
+            logger.info(`Carrito actualizado correctamente: ${JSON.stringify(cart, null, 2)}`);
             return cart;
         } catch (error) {
             logger.error("Error al actualizar carrito:", error);
@@ -60,7 +61,7 @@ class CartRepository {
         try {
             const emptyCart = await CartsModel.findByIdAndUpdate(cartId, { products: [] }, { new: true });
             if (!emptyCart) {
-                logger.warn("Carrito no encontrado");
+                logger.warning("Carrito no encontrado");
             }
             logger.info("Carrito vaciado correctamente");
             return emptyCart;
@@ -75,16 +76,16 @@ class CartRepository {
         try {
             const cart = await CartsModel.findById(cartId);
             if (!cart) {
-                logger.warn("Carrito no encontrado");
+                logger.warning("Carrito no encontrado");
             }
             const productIndex = cart.products.findIndex(product => product.product._id.toString() === productId);
             if (productIndex !== -1) {
                 cart.products[productIndex].quantity = quantity;
                 await cart.save();
-                logger.info("Cantidad de producto actualizada", { cartId, productId, quantity });
+                logger.info("Cantidad del producto actualizada", { cartId, productId, quantity });
                 return cart;
             } else {
-                logger.warn("Producto no encontrado en el carrito")
+                logger.warning("Producto no encontrado en el carrito")
             }
         } catch (error) {
             logger.error("Error al modificar cantidades:", error);
@@ -97,18 +98,18 @@ class CartRepository {
         try {
             // Validamos entradas
             if (!cid || !pid || !quantity || quantity <= 0) {
-                logger.warn("Parámetros inválidos. Se requiere un CID, PID y cantidad mayor que cero.", { cid, pid, quantity });
+                logger.warning("Parámetros inválidos. Se requiere un CID, PID y cantidad mayor que cero.", { cid, pid, quantity });
                 throw new Error("Parámetros inválidos. Se requiere un CID, PID y cantidad mayor que cero.");
             }
             const foundCart = await CartsModel.findById(cid);
             const foundProduct = await ProductsModel.findById(pid);
 
             if (!foundCart) {
-                logger.warn("Carrito no encontrado", { cid });
+                logger.warning("Carrito no encontrado", { cid });
                 throw new Error("Carrito no encontrado");
             }
             if (!foundProduct) {
-                logger.warn("Producto no encontrado", { pid });
+                logger.warning("Producto no encontrado", { pid });
                 throw new Error("Producto no encontrado");
             }
 
@@ -134,6 +135,33 @@ class CartRepository {
         } catch (error) {
             logger.error("Error al agregar producto al carrito:", error);
             throw new Error("Error al agregar producto al carrito: " + error.message);
+        }
+    }
+
+
+  
+    async deleteProductFromCart(cartId, productId) {
+        try {
+            const cart = await CartsModel.findById(cartId);
+            if (!cart) {
+                logger.warning(`Carrito con ID "${cartId}" no encontrado`);
+                throw new Error(`Carrito con ID "${cartId}" no encontrado`);
+            }
+            // Verificar si el carrito contiene el producto
+            const productIndex = cart.products.findIndex(p => p.product.toString() === productId);
+            if (productIndex === -1) {
+                logger.warning(`Producto con ID "${productId}" no encontrado en el carrito`);
+                throw new Error(`Producto con ID "${productId}" no encontrado en el carrito`);
+            }
+
+            // Eliminar el producto del carrito
+            cart.products.splice(productIndex, 1);
+            await cart.save();
+            logger.info(`Producto con ID "${productId}" eliminado del carrito con ID "${cartId}"`);
+            return cart;
+        } catch (error) {
+            logger.error("Error al eliminar el producto del carrito", error);
+            throw new Error("Error al eliminar el producto del carrito");
         }
     }
 }
