@@ -2,98 +2,135 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página de Inicio</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        
-        body {
-            background-color: #f3e5f5;
-            color: #4a148c;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Perfil</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+    }
 
-    </style>
+    body {
+      background-color: #f3e5f5;
+      color: #4a148c;
+    }
+  </style>
 </head>
 
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <a class="navbar-brand" href="#">
-                <img src="img/logo.PNG" alt="Logo" width="180" height="80" class="d-inline-block align-top">
-        </a>
-        <div class="navbar-center">Boris Gamer</div>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-            <ul class="navbar-nav">
-                 <li class="nav-item">
-                   <a class="nav-link" href="/products">Tienda</a>
-                </li>
-                <li class="nav-item">
-                   <a class="nav-link" href="/login">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/register">Registrarse</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/profile">Mi Perfil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/chat">Chat</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/contact">Contáctanos</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-<!-- Login Form -->
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h2 class="text-center">Iniciar sesión</h2>
-                       <form action="/api/users/login" method="POST">
-                            <div class="form-group mb-2">
-                                <label for="email">Correo electrónico:</label>
-                                <input type="email" id="email" name="email" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="password">Contraseña:</label>
-                                <input type="password" id="password" name="password" class="form-control" required>
-                            </div>
-                            <button type="submit" class="btn btnprimary btn-block">Iniciar sesión</button>
-                        </form>
-                        <!-- Botón de registro -->
-                        <div class="text-center mt-2">
-                            <form action="/register" method="GET">
-                                <button type="submit" class="btn btn-secondary btn-block">Registrarse</button>
-                            </form>
-                        </div>
-                        <!-- Botón GitHub -->
-                        <div class="text-center mt-2">
-                            <a href="/api/users/github" class="btn btn-dark btn-block">Iniciar sesión con GitHub</a>
-                        </div>
-                         <!-- Botón Olvidaste tu contraseña -->
-                         <div class="text-center mt-2">
-                            <form action="/recover" method="GET">
-                                <button type="submit" class="btn btn-link">Olvidaste tu contraseña?</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <a class="navbar-brand" href="#">
+      <img src="img/logo.PNG" alt="Logo" width="180" height="80" class="d-inline-block align-top">
+    </a>
+    <div class="navbar-center">Boris Gamer</div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/products">Tienda</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/login">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/profile">Mi Perfil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/chat">Chat</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/contact">Contáctanos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/carts/{{user.Carrito}}">Carrito</a>
+        </li>
+      </ul>
     </div>
+  </nav>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <!-- Login Form -->
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="text-center">Iniciar sesión</h2>
+            <!-- Alerta de error -->
+            <div id="error-alert" class="alert alert-danger" style="display: none;"></div>
+            <!-- Formulario de inicio de sesión -->
+            <form id="login-form" action="/api/users/login" method="POST">
+              <div class="form-group mb-2">
+                <label for="email">Correo electrónico:</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+              </div>
+              <button type="submit" class="btn btnprimary btn-block">Iniciar sesión</button>
+            </form>
+            <!-- Botón de registro -->
+            <div class="text-center mt-2">
+              <form action="/register" method="GET">
+                <button type="submit" class="btn btn-secondary btn-block">Registrarse</button>
+              </form>
+            </div>
+            <!-- Botón GitHub -->
+            <div class="text-center mt-2">
+              <a href="/api/users/github" class="btn btn-dark btn-block">Iniciar sesión con GitHub</a>
+            </div>
+            <!-- Botón Olvidaste tu contraseña -->
+            <div class="text-center mt-2">
+              <form action="/recover" method="GET">
+                <button type="submit" class="btn btn-link">¿Olvidaste tu contraseña?</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  {{!-- <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.getElementById("login-form");
+      const errorAlert = document.getElementById("error-alert");
+
+      form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        const formData = new FormData(form);
+
+        try {
+          const response = await fetch("/api/users/login", {
+            method: "POST",
+            body: formData
+          });
+
+          if (!response.ok) {
+            const errorMessage = await response.text();
+            errorAlert.textContent = errorMessage;
+            errorAlert.style.display = "block";
+          } else {
+            // Redirigir al perfil si el inicio de sesión fue exitoso
+            window.location.href = "/profile";
+          }
+        } catch (error) {
+          console.error("Error al enviar la solicitud:", error);
+          errorAlert.textContent = "Error interno del servidor";
+          errorAlert.style.display = "block";
+        }
+      });
+    });
+  </script> --}}
 </body>
 
 </html>

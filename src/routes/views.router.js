@@ -20,7 +20,7 @@ router.get("/carts/:cid", passportCall("jwt", { session: false }), viewsControll
 //Vista raiz app, productos
 router.get("/", viewsController.home);
 
-router.get("/chat", passportCall("jwt"), authorization("Usuario"), viewsController.chat)
+router.get("/chat", passportCall("jwt"), authorization2("admin"), viewsController.chat)
 
 router.get("/login", viewsController.login);
 
@@ -37,6 +37,8 @@ router.get("/recover", viewsController.recover)
 router.get("/contact", viewsController.contact)
 
 router.get("/profile", passportCall("jwt", { session: false }), viewsController.profile);
+
+router.get("/purchase", viewsController.purchase)
 
 //A esta ruta hay ponerle un DTO para que solo mande nombre, apellido y rol
 router.get("/current", passportCall("jwt"), (req, res) => {

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resumen de Compra</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f3e5f5;
+            color: #4a148c;
+        }
+
+        .navbar {
+            background-color: #6a1b9a;
+            padding: 5px;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .summary-header, .summary-total {
+            background-color: #6a1b9a;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .summary-item, .out-of-stock-item {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btnVolver {
+            background-color: #ff0080;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btnVolver:hover {
+            background-color: #4a148c;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="#">
+            <img src="img/logo.PNG" alt="Logo" width="180" height="80" class="d-inline-block align-top">
+        </a>
+        <div class="navbar-center">Boris Gamer</div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/products">Tienda</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/profile">Mi Perfil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/chat">Chat</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/contact">Contáctanos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/carts/666fce3d59d6103fa3c85a11">Carrito</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="summary-header">
+            <h2 class="resumenCompra">Gracias por tu compra!</h2>
+            <p><strong>Código de Compra:</strong> <span id="codigo"></span></p>
+            <p><strong>Comprador:</strong> <span id="comprador"></span></p>
+            <p><strong>Fecha:</strong> <span id="fecha"></span></p>
+        </div>
+
+        <div id="productos-comprados" class="summary-items">
+            <h3>Productos Comprados</h3>
+            <!-- Los productos comprados se insertarán aquí -->
+        </div>
+
+        <div class="summary-total">
+            <p><strong>Total de la Compra:</strong> $<span id="total"></span></p>
+            <a href="/products" class="btnVolver">Volver a la Tienda</a>
+            <button id="enviarCorreo" class="btnVolver">Enviar factura al correo</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            document.getElementById('codigo').textContent = urlParams.get('codigo');
+            document.getElementById('comprador').textContent = urlParams.get('comprador');
+            document.getElementById('fecha').textContent = new Date(urlParams.get('fecha')).toLocaleString();
+
+            // Formatear el total con dos decimales
+            const total = parseFloat(urlParams.get('total')).toFixed(2);
+            document.getElementById('total').textContent = total;
+
+            const productosComprados = JSON.parse(decodeURIComponent(urlParams.get('productos_comprados')));
+
+            const productosContainer = document.getElementById('productos-comprados');
+            productosComprados.forEach(producto => {
+                const div = document.createElement('div');
+                div.classList.add('summary-item');
+                div.innerHTML = `
+                    <p><strong>Producto:</strong> ${producto.Producto}</p>
+                    <p><strong>Precio:</strong> $${producto.Precio.toFixed(2)}</p>
+                    <p><strong>Cantidad:</strong> ${producto.Cantidad}</p>
+                `;
+                productosContainer.appendChild(div);
+            });
+
+            const outOfStockProducts = JSON.parse(decodeURIComponent(urlParams.get('productos_sin_stock')));
+
+            if (outOfStockProducts && outOfStockProducts.length > 0) {
+                const outOfStockContainer = document.createElement('div');
+                outOfStockContainer.innerHTML = '<h3>Productos Sin Stock</h3>';
+                outOfStockProducts.forEach(product => {
+                    const div = document.createElement('div');
+                    div.classList.add('out-of-stock-item');
+                    div.innerHTML = `
+                        <p><strong>Producto:</strong> ${product.Producto}</p>
+                        <p><strong>Precio:</strong> $${product.Precio.toFixed(2)}</p>
+                    `;
+                    outOfStockContainer.appendChild(div);
+                });
+                productosContainer.appendChild(outOfStockContainer);
+            }
+
+            document.getElementById('enviarCorreo').addEventListener('click', function () {
+                const email = document.getElementById('comprador').textContent;
+                const subject = 'Resumen de tu Compra';
+                const message = `
+                    <h2>Resumen de Compra</h2>
+                    <p><strong>Código de Compra:</strong> ${urlParams.get('codigo')}</p>
+                    <p><strong>Comprador:</strong> ${urlParams.get('comprador')}</p>
+                    <p><strong>Fecha:</strong> ${new Date(urlParams.get('fecha')).toLocaleString()}</p>
+                    <h3>Productos Comprados</h3>
+                    ${productosComprados.map(producto => `
+                        <div>
+                            <p><strong>Producto:</strong> ${producto.Producto}</p>
+                            <p><strong>Precio:</strong> $${producto.Precio.toFixed(2)}</p>
+                            <p><strong>Cantidad:</strong> ${producto.Cantidad}</p>
+                        </div>
+                    `).join('')}
+                    ${outOfStockProducts.length > 0 ? `
+                        <h3>Productos Sin Stock</h3>
+                        ${outOfStockProducts.map(producto => `
+                            <div>
+                                <p><strong>Producto:</strong> ${producto.Producto}</p>
+                                <p><strong>Precio:</strong> $${producto.Precio.toFixed(2)}</p>
+                            </div>
+                        `).join('')}
+                    ` : ''}
+                    <p><strong>Total de la Compra:</strong> $${total}</p>
+                `;
+                fetch('/send-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, subject, message })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Correo enviado correctamente');
+                    } else {
+                        alert('Error al enviar el correo');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al enviar el correo');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

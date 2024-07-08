@@ -184,3 +184,21 @@ app.post("/mail", async (req, res) => {
         console.log(error)
     }
 })
+
+///////////////
+
+app.post("/send-email", async (req, res) => {
+    const { email, subject, message } = req.body;
+    try {
+        await transporter.sendMail({
+            from: 'your-email@example.com',
+            to: email,
+            subject: subject,
+            html: message
+        });
+        res.json({ success: true });
+    } catch (error) {
+        console.error(error);
+        res.json({ success: false });
+    }
+});

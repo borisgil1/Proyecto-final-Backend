@@ -5,6 +5,7 @@ const cartRepository = new CartRepository();
 const UserDTO = require("../dto/user.dto.js");
 const { addLogger } = require("../utils/logger.js");
 
+
 //Vista productos
 class viewsController {
     async renderProducts(req, res) {
@@ -123,6 +124,17 @@ class viewsController {
         const isAdmin = req.user.role === 'admin';
         res.render("profile", { user: userDto, isAdmin });
     }
+
+    async purchase(req, res) {
+        const { codigo, comprador, fecha, total } = req.query;
+
+    res.render("purchase", {
+        codigo,
+        comprador,
+        fecha,
+        total
+        });
+    };
 }
 
 module.exports = viewsController;
