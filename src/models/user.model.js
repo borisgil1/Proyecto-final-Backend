@@ -26,16 +26,22 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['admin', 'usuario'],
+        enum: ['admin', 'usuario', 'premium'],
         default: 'usuario'
     },
     cart: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "carts"
+    },
+    //Genero el token y lo guardo acá.
+    //Se valida el token y si es valido se elimina
+    resetToken: {
+        token: String,
+        expire: Date
     }
-})
+});
 
 //                           siempre en plural
-const UserModel = mongoose.model("usuarios", userSchema)
+const UserModel = mongoose.model("users", userSchema)
 
 module.exports = UserModel;

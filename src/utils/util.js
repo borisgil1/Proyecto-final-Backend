@@ -18,12 +18,11 @@ const passportCall = (strategy) => {
             }
             //Si no hay usuario tiramos un 401
             if (!user) {
-                //req.user = null; // Usuario no autenticado
-                //return next();
-                //return res.status(401).send({ error: info.message ? info.message : info.toString() });
-                req.logger.warning("Necesitas logearte para acceder");
-                return res.status(401).send({ error: "Necesitas logearte para acceder" });
+                return next();           
+                //req.logger.warning("Necesitas logearte para acceder");
+                //return res.status(401).send({ error: "Necesitas logearte para acceder" });
             }
+            
             //Si marcha bien req.user guarda el usuario y avanzamos con el next
             req.user = user;
             next();

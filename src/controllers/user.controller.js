@@ -1,10 +1,13 @@
 //Registro Controller
 const UserModel = require("../models/user.model.js");
 const jwt = require("jsonwebtoken");
-const { createHash } = require("../utils/hashbcrypt.js");
-const { isValidPassword } = require("../utils/hashbcrypt.js");
+const { createHash, isValidPassword } = require("../utils/hashbcrypt.js");
 const CartsModel = require("../models/carts.model.js");
-const { addLogger } = require("../utils/logger.js");
+const { logger } = require("../utils/logger.js");
+const bcrypt = require("bcrypt");
+const EmailManager = require("../service/email.js");
+const emailManager = new EmailManager();
+const {generateResetToken} = require("../utils/resetoken.js");
 
 class UserController {
     //Registro con JWT
@@ -72,13 +75,13 @@ class UserController {
             //Si no existe el usuario retorna error
             if (!user) {
                 req.logger.warning("Este usuario no existe");
-                return res.status(400).send("El usuario no existe");
+                return res.status(400).render("login", { errors: { email: "El usuario no está registrado" } });
             }
 
             //si existe verifico la contraseña
             if (!isValidPassword(password, user)) {
                 req.logger.warning("Contraseña incorrecta");
-                return res.status(401).send("Contraseña incorrecta");
+                return res.status(400).render("login", { errors: { password: "Contraseña incorrecta" } });
             }
 
             //Generamos el token
@@ -107,7 +110,6 @@ class UserController {
         }
     }
 
-
     //Cerrar sesion con JWT:
     async logoutJwt(req, res) {
         //limpio la cookie del token
@@ -115,7 +117,6 @@ class UserController {
         //Redirigir al login.
         res.redirect("/login");
     }
-
 
     //Version Github 
     async gitHub(req, res) {
@@ -145,16 +146,86 @@ class UserController {
         }
     };
 
+    //Restablecer contraseña
+    async resetPassword(req, res) {
+        const { email } = req.body;
+       
+        try {
+            //Busco el usuario por email en la bdd
+            const user = await UserModel.findOne({ email });
+            if (!user) {
+                logger.error("No se encontró ningún usuario con el correo electrónico proporcionado.");
+                return res.status(400).render("reset-password", { errors: { email: "El usuario no está registrado" } });
+            }
 
-    async profile(req, res) {
-        if (!req.session.login) {
-            return res.redirect("/login")
+            //Si hay usuario genero el token (utils)
+            const resetToken = generateResetToken();
+            const expireTime = new Date(Date.now() + 60 * 60 * 1000); //60 minutos a partir de ahora
+            
+            //Agrego el token y el tiempo de expiración al usuario
+            user.resetToken = {
+                token: resetToken,
+                expire: expireTime
+            }
+
+            //Guardo en la bdd
+            await user.save()
+
+            //Despues de guardados los cambios envío el correo
+            await emailManager.resetPasswordEmail(email, user, resetToken);
+
+            //Redirijo a la vista confirmation
+            res.redirect("/confirmation");
+
+        } catch (error) {
+            req.logger.error("Error interno del servidor", error)
+            res.status(500).send("Error interno del servidor")
         }
-        res.render("profile");
     }
 
-    async products(req, res) {
-        res.render("products");
+    //Cambiar contraseña
+    async changePassword(req, res) {
+        const { email, token, newPassword } = req.body;
+
+        try {
+            // Validamos si el email está registrado
+            const user = await UserModel.findOne({ email });
+            if (!user) {
+                req.logger.error("No se encontró ningún usuario con el correo electrónico proporcionado.");
+                return res.status(400).render("change-password", { errors: { email: "El usuario no está registrado" } });
+            }
+
+            //Si hay usuario:
+            // Validamos si existe el token y el tiempo de expiración
+            if (!user.resetToken || user.resetToken.token !== token || user.resetToken.expire < Date.now()) {
+                req.logger.error("Token inválido o expirado");
+                return res.status(400).render("change-password", {errors: { token: "Token inválido o expirado"}});
+            }
+
+            // Validamos que la contraseña no sea igual a la anterior
+            const isPasswordValid = bcrypt.compareSync(newPassword, user.password);
+            if (isPasswordValid) {
+                req.logger.error("La contraseña no puede ser igual que la anterior");
+               return res.status(400).render("change-password", { errors: {newPassword: "La contraseña no puede ser igual que la anterior"} });
+            }
+
+            // Restablecemos contraseña
+            user.password = createHash(newPassword);
+
+            // Limpiamos token y tiempo de expiración
+            user.resetToken = null;
+
+            // Guardamos en la base de datos
+            await user.save();
+            req.logger.info("Se restableció la contraseña correctamente");
+
+            // Redirigimos al login
+            return res.redirect("/login");
+
+        } catch (error) {
+            req.logger.error("Error interno del servidor", error);
+            res.status(500).render("password-error", { errors: "Error interno del servidor" });
+        }
     }
 }
 

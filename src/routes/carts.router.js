@@ -14,7 +14,7 @@ router.get("/:cid", cartController.getCartById);
 //Mostrar todos los carritos
 router.get("/", cartController.getCarts);
 
-//Agregar productos a carritos
+//Agregar un producto a carrito
 router.post("/:cid/products/:pid", cartController.addProductToCart);
 
 //Eliminar producto de carrito

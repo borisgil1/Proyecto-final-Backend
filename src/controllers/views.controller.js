@@ -1,4 +1,4 @@
-
+//Controlador de vista
 const CartRepository = require("../repository/cart.repository.js");
 const ProductsModel = require("../models/products.model.js");
 const cartRepository = new CartRepository();
@@ -18,11 +18,12 @@ class viewsController {
                 return { _id, ...rest };
             })
 
+            //Verifico si req.user estpa definido 
             //Paso el user DTO a la vista
-            const userDto = new UserDTO(req.user.first_name, req.user.last_name, req.user.role, req.user.cart, req.user.age);
-            // const userDto = req.user ? 
-            //     new UserDTO(req.user.first_name, req.user.last_name, req.user.role, req.user.cart ? req.user.cart.toString() : '', req.user.age) 
-            //     : null;
+            //const userDto = new UserDTO(req.user.first_name, req.user.last_name, req.user.role, req.user.cart, req.user.age);
+            const userDto = req.user 
+            ? new UserDTO(req.user.first_name, req.user.last_name, req.user.role, req.user.cart ? req.user.cart.toString() : '', req.user.age)
+            : null;
 
             res.render("products", {
                 products: final,
@@ -57,18 +58,18 @@ class viewsController {
 
                 // Renderizar la vista de carrito con los datos del carrito
                 const productsInCar = cart.products.map(item => ({
-                     //Lo convertimos a objeto para pasar las restricciones de Exp Handlebars. 
+                    //Lo convertimos a objeto para pasar las restricciones de Exp Handlebars. 
                     product: item.product.toObject(),
                     quantity: item.quantity,
-                    productId: item.product._id, 
+                    productId: item.product._id,
                 }));
 
                 const userDto = new UserDTO(req.user.first_name, req.user.last_name, req.user.email);
                 //Guardo en variable el cartId y el correo del usuario
                 const cartId = req.user.cart.toString();
                 const email = req.user.email;
-             
-                res.render("carts", { products: productsInCar, totalPrice, email, user: userDto, cartId});
+
+                res.render("carts", { products: productsInCar, totalPrice, email, user: userDto, cartId });
 
             } else {
                 req.logger.error("Carrito no encontrado");
@@ -110,16 +111,37 @@ class viewsController {
         res.render("realtimeproducts");
     };
 
-    async recover(req, res) {
-        res.render("recover");
+    async reset(req, res) {
+        res.render("reset");
     };
 
     async contact(req, res) {
         res.render("contact");
     };
 
+    async resetPassword(req, res) {
+        res.render("reset-password");
+    }
+
+    async changepassword(req, res) {
+        res.render("change-password");
+    };
+
+    async confirmation(req, res) {
+        res.render("confirmation");
+    };
+
+    async cartError(req, res) {
+        res.render("cart-error");
+    };
+
     async profile(req, res) {
-        //Con DTO: 
+        //Valido si hay usuario autenticado
+        if (!req.user) {
+            const isAdmin = false;
+            return res.render("profile", { user: null, isAdmin });
+        }
+        //Si hay usuario autenticado creo el DTO con los datos del usaurio : 
         const userDto = new UserDTO(req.user.first_name, req.user.last_name, req.user.role, req.user.cart, req.user.age);
         const isAdmin = req.user.role === 'admin';
         res.render("profile", { user: userDto, isAdmin });
@@ -128,11 +150,11 @@ class viewsController {
     async purchase(req, res) {
         const { codigo, comprador, fecha, total } = req.query;
 
-    res.render("purchase", {
-        codigo,
-        comprador,
-        fecha,
-        total
+        res.render("purchase", {
+            codigo,
+            comprador,
+            fecha,
+            total
         });
     };
 }

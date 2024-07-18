@@ -53,12 +53,20 @@ class cartController {
         const cid = req.params.cid;
         const pid = req.params.pid;
         const quantity = req.body.quantity || 1;
-        try {
-            const cartUpdated = await cartService.addProductToCart(cid, pid, quantity)
-            return res.status(200).json({ message: "Producto agregado al carrito con éxito", cart: cartUpdated });
-        } catch (error) {
-            req.logger.error("Error al agregar producto al carrito:", error);
-            return res.status(500).send("Error al agregar producto al carrito:");
+
+
+        if (!cid) {
+            console.log('No CID present');
+            return res.status(400).render("products", { errors: { auth: "Debes estar logeado para agregar productos al carrito" } });
+        } else {
+            try {
+                const cartUpdated = await cartService.addProductToCart(cid, pid, quantity)
+                return res.status(200).json({ message: "Producto agregado al carrito con éxito", cart: cartUpdated });
+            } catch (error) {
+                req.logger.error("Error al agregar producto al carrito:", error);
+                console.log("Error al agg producto al cart");
+                return res.status(500).send("Error al agregar producto al carrito:");
+            }
         }
     };
 
@@ -78,7 +86,7 @@ class cartController {
         }
     }
 
-    //Actualizar la cantidad de los productos en el carrito
+    //Actualizar producto y la cantidad de los productos en el carrito
     async updateCartProducts(req, res) {
         const cid = req.params.id;
         const { product, quantity } = req.body;
@@ -94,7 +102,7 @@ class cartController {
         }
     }
 
-    //Actualizar cantidad de productos del carrito
+    //Actualizar solo la cantidad de productos del carrito
     async updateQuantity(req, res) {
         const cid = req.params.cid;
         const pid = req.params.pid;

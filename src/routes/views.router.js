@@ -10,9 +10,8 @@ const { passportCall } = require("../utils/util.js");
 const { authorization } = require("../utils/util.js");
 const {authorization2} = require("../utils/util.js");
 
-
 //vista products, muestra todos los productos
-router.get("/products", passportCall("jwt"), authorization2("admin"), viewsController.renderProducts)
+router.get("/products", passportCall("jwt"), authorization2("admin"), viewsController.renderProducts);
 
 //vista cart, muestra los productos que tiene cada carrito
 router.get("/carts/:cid", passportCall("jwt", { session: false }), viewsController.renderCart);
@@ -20,25 +19,46 @@ router.get("/carts/:cid", passportCall("jwt", { session: false }), viewsControll
 //Vista raiz app, productos
 router.get("/", viewsController.home);
 
-router.get("/chat", passportCall("jwt"), authorization2("admin"), viewsController.chat)
+//Vista chat
+router.get("/chat", passportCall("jwt"), authorization2("admin"), viewsController.chat);
 
+//Vista login
 router.get("/login", viewsController.login);
 
+//Vista register
 router.get("/register", viewsController.register);
 
+//Vista home
 router.get("/home", viewsController.home);
 
+//Vista admin
 router.get("/admin", viewsController.admin);
 
-router.get("/realtimeproducts", passportCall("jwt"), authorization("Administrador"), viewsController.realTime)
+//Vista realtimeproducts
+router.get("/realtimeproducts", passportCall("jwt"), authorization("Administrador"), viewsController.realTime);
 
-router.get("/recover", viewsController.recover)
+//Vista contact
+router.get("/contact", viewsController.contact);
 
-router.get("/contact", viewsController.contact)
-
+//Vista profile
 router.get("/profile", passportCall("jwt", { session: false }), viewsController.profile);
 
-router.get("/purchase", viewsController.purchase)
+//Vista purchase
+router.get("/purchase", viewsController.purchase);
+
+//Vista resetpassword
+router.get("/reset-password", viewsController.resetPassword);
+
+//Vista changepassword
+router.get("/change-password", viewsController.changepassword);
+
+//Vista confirmation
+router.get("/confirmation", viewsController.confirmation);
+
+//Carrito si no está logeado
+router.get("/carts", viewsController.cartError);
+
+//router.get("/passout", viewsController.logout);
 
 //A esta ruta hay ponerle un DTO para que solo mande nombre, apellido y rol
 router.get("/current", passportCall("jwt"), (req, res) => {

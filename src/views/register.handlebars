@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
@@ -7,52 +7,92 @@
     <title>Registro</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
+        body {
+            background-color: #f3e5f5;
+            color: #4a148c;
+        }
         .card {
             max-width: 80%;
             margin: auto;
-        }
-
-        .title {
-            margin-top: 50px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
 
-<body class="vh-100 d-flex align-items-center justify-content-center">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="#">
+            <img src="/img/logo.PNG" alt="Logo" width="180" height="80" class="d-inline-block align-top">
+        </a>
+        <div class="navbar-center">Boris Gamer</div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/products">Tienda</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/profile">Mi Perfil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/chat">Chat</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/contact">Contáctanos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/carts/{{user.Carrito}}">Carrito</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
-                        <h2 class="text-center mb-4 title">Registro</h2>
+                        <h2 class="text-center title mt-0">Registro</h2>
                         <form action="api/users/register" method="POST">
                             <div class="form-group">
-                                <label for="first_name">First Name:</label>
-                                <input type="text" id="nombre" name="first_name" class="form-control" required>
+                                <label for="first_name">Nombre:</label>
+                                <input type="text" id="first_name" name="first_name" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <label for="last_name">Last Name:</label>
-                                <input type="text" id="apellido" name="last_name" class="form-control" required>
+                                <label for="last_name">Apellido:</label>
+                                <input type="text" id="last_name" name="last_name" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <label for="email">Email:</label>
+                                <label for="email">Correo electrónico:</label>
                                 <input type="email" id="email" name="email" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <label for="password">Password:</label>
+                                <label for="password">Contraseña:</label>
                                 <input type="password" id="password" name="password" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <label for="age">Age:</label>
-                                <input type="number" id="edad" name="age" class="form-control" required>
+                                <label for="age">Edad:</label>
+                                <input type="number" id="age" name="age" class="form-control" required>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-block">Registrarme</button>
+                            <button type="submit" class="btn btnprimary btn-block">Registrarme</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>

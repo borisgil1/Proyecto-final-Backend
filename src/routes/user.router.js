@@ -19,9 +19,10 @@ router.get("/github", passport.authenticate("github", { scope: ["user:email"] })
 // Callback de Github
 router.get("/githubcallback", passport.authenticate("github", { failureRedirect: "/login" }), userController.githubCallback);
 
-router.get("/profile", passport.authenticate("jwt", { session: false }), userController.profile);
+//Restablecer contraseñas
+router.post("/reset-password",  userController.resetPassword);
 
-//router.post("/products", userController.products);
-
+//Cambiar contraseñas
+router.post("/change-password", userController.changePassword);
 
 module.exports = router;

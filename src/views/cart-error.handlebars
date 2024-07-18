@@ -17,7 +17,7 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark">
     <a class="navbar-brand" href="#">
-      <img src="img/logo.PNG" alt="Logo" width="180" height="80" class="d-inline-block align-top">
+      <img src="/img/logo.PNG" alt="Logo" width="180" height="80" class="d-inline-block align-top">
     </a>
     <div class="navbar-center">Boris Gamer</div>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -48,26 +48,13 @@
     </div>
   </nav>
 
-  <h1 class="mt-2 mb-2">Mi perfil</h1>
+  <h1 class="mt-2 mb-2">Mi carrito</h1>
 
-  <!-- Verificación de inicio de sesión -->
-  {{#if user}}
-  <div class="profile-card">
-    <p>Bienvenido, {{user.Nombre}} {{user.Apellido}}!</p>
-    <p>Rol: {{user.Rol}}</p>
-    <form action="/api/users/logout" method="POST">
-      <button class="btn" type="submit">Logout</button>
-    </form>
-    <a class="btn" href="/chat">Chat en vivo</a>
-    <a class="btn" href="/products">Tienda</a>
-    <a class="btn" href="/realtimeproducts">Modificar Productos</a>
-  </div>
-  {{else}}
   <div class="text-center mt-4">
-    <p>No has iniciado sesión.</p>
+    <p>Tienes que iniciar sesión para acceder al carrito</p>
     <a class="btn btnprimary" href="/login">Iniciar sesión</a>
   </div>
-  {{/if}}
+ 
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

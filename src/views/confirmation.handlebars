@@ -4,12 +4,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Perfil</title>
+  <title>Recupera tu cuenta</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+    }
+
     body {
       background-color: #f3e5f5;
       color: #4a148c;
+    }
+
+    .container {
+      margin-top: 50px;
+    }
+
+    .card {
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+      padding: 30px;
     }
   </style>
 </head>
@@ -17,7 +36,7 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark">
     <a class="navbar-brand" href="#">
-      <img src="img/logo.PNG" alt="Logo" width="180" height="80" class="d-inline-block align-top">
+      <img src="/img/logo.PNG" alt="Logo" width="180" height="80" class="d-inline-block align-top">
     </a>
     <div class="navbar-center">Boris Gamer</div>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -48,26 +67,25 @@
     </div>
   </nav>
 
-  <h1 class="mt-2 mb-2">Mi perfil</h1>
-
-  <!-- Verificación de inicio de sesión -->
-  {{#if user}}
-  <div class="profile-card">
-    <p>Bienvenido, {{user.Nombre}} {{user.Apellido}}!</p>
-    <p>Rol: {{user.Rol}}</p>
-    <form action="/api/users/logout" method="POST">
-      <button class="btn" type="submit">Logout</button>
-    </form>
-    <a class="btn" href="/chat">Chat en vivo</a>
-    <a class="btn" href="/products">Tienda</a>
-    <a class="btn" href="/realtimeproducts">Modificar Productos</a>
+  <!-- Confirmation Message -->
+  <div class="container mt-4">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="text-center">Correo enviado</h2>
+            <p class="text-center mt-4 mb-4">Se ha enviado un correo electrónico a tu cuenta para restablecer tu contraseña. Por favor, revisa tu bandeja de entrada.</p>
+            <div class="text-center mt-2">
+              <a href="/login" class="btn btnprimary btn-block">Volver a iniciar sesión</a>
+            </div>
+            <div class="text-center mt-2">
+              <a href="/register" class="btn btn-secondary btn-block">Crear nueva cuenta</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  {{else}}
-  <div class="text-center mt-4">
-    <p>No has iniciado sesión.</p>
-    <a class="btn btnprimary" href="/login">Iniciar sesión</a>
-  </div>
-  {{/if}}
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

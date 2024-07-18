@@ -102,17 +102,6 @@ const httpServer = app.listen(port, () => {
 })
 
 
-//SMTP = configuración del servicio SMTP, para enviar mensajes
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    port: 587,
-    auth: {
-        user: "boris.gilp@gmail.com",
-        pass: "ufhc auvf qduw nfwd"
-    }
-})
-
-
 //instancia Socket del servidor
 const io = socket(httpServer);
 
@@ -155,6 +144,17 @@ io.on("connection", async (socket) => {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+//SMTP = configuración del servicio SMTP, para enviar mensajes
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    port: 587,
+    auth: {
+        user: "boris.gilp@gmail.com",
+        pass: "ufhc auvf qduw nfwd"
+    }
+});
+
 //Envio de correos
 app.post("/mail", async (req, res) => {
     const { email, subject, message } = req.body;
@@ -183,9 +183,8 @@ app.post("/mail", async (req, res) => {
         res.status(500).send("Error al enviar el correo")
         console.log(error)
     }
-})
+});
 
-///////////////
 
 app.post("/send-email", async (req, res) => {
     const { email, subject, message } = req.body;
