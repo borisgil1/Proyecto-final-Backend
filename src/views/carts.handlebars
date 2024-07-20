@@ -47,7 +47,7 @@
         }
 
         .btnAddtoCart {
-            background-color: #ff0080 ;
+            background-color: #ff0080;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -68,7 +68,7 @@
         <a class="navbar-brand" href="#">
             <img src="/img/logo.PNG" alt="Logo" width="180" height="80" class="d-inline-block align-top">
         </a>
-        <div class="navbar-center">Baris Gamer</div>
+        <div class="navbar-center">Boris Gamer</div>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -85,9 +85,6 @@
                     <a class="nav-link" href="/profile">Mi Perfil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/chat">Chat</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="/contact">Contáctanos</a>
                 </li>
                 <li class="nav-item">
@@ -97,10 +94,10 @@
         </div>
     </nav>
 
- {{#if user}}
+    {{#if user}}
     <div class="container">
         <div class="cart-header">
-             <p>Carrito de compras de {{user.Name}} {{user.Last_name}}!</p>
+            <p>Carrito de compras de {{user.name}} {{user.last_name}}!</p>
         </div>
 
         {{#each products}}

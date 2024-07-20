@@ -37,7 +37,7 @@ class productController {
         }
     };
 
-
+    //Crear un nuevo producto
     async addProduct(req, res, next) {
         const newProduct = req.body;
     

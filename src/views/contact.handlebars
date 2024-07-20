@@ -2,35 +2,35 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Contacto</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f3e5f5;
-            color: #4a148c;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Contacto</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f3e5f5;
+      color: #4a148c;
+    }
 
-        .container {
-            margin-top: 50px;
-        }
+    .container {
+      margin-top: 50px;
+    }
 
-        .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+    .card {
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-        .card-body {
-            padding: 30px;
-        }
-    </style>
+    .card-body {
+      padding: 30px;
+    }
+  </style>
 </head>
 
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
     <a class="navbar-brand" href="#">
       <img src="img/logo.PNG" alt="Logo" width="180" height="80" class="d-inline-block align-top">
     </a>
@@ -51,9 +51,6 @@
           <a class="nav-link" href="/profile">Mi Perfil</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/chat">Chat</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link" href="/contact">Contáctanos</a>
         </li>
         <li class="nav-item">
@@ -63,37 +60,37 @@
     </div>
   </nav>
 
-    <!-- Contact Form -->
-    <div class="container mt-4">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h2 class="text-center">Formulario de Contacto</h2>
-                        <form action="/mail" method="POST">
-                            <div class="form-group">
-                                <label for="email">Correo electrónico:</label>
-                                <input type="email" id="email" name="email" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="subject">Asunto:</label>
-                                <input type="text" id="subject" name="subject" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="message">Cuerpo:</label>
-                                <textarea id="message" name="message" class="form-control" rows="2" required></textarea>
-                            </div>
-                            <button type="submit" class="btnAddtoCart btn-block">Enviar</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+  <!-- Contact Form -->
+  <div class="container mt-4">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="text-center">Formulario de Contacto</h2>
+            <form action="/mail" method="POST">
+              <div class="form-group">
+                <label for="email">Correo electrónico:</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label for="subject">Asunto:</label>
+                <input type="text" id="subject" name="subject" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label for="message">Cuerpo:</label>
+                <textarea id="message" name="message" class="form-control" rows="2" required></textarea>
+              </div>
+              <button type="submit" class="btnAddtoCart btn-block">Enviar</button>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>

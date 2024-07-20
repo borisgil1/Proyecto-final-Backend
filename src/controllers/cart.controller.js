@@ -4,6 +4,7 @@ const TicketModel = require("../models/ticket.js");
 const { cartService } = require("../service/index.js")
 const { productService } = require("../service/index.js");
 const { addLogger } = require("../utils/logger.js");
+const UserModel = require("../models/user.model.js");
 
 class cartController {
 
@@ -48,25 +49,35 @@ class cartController {
         }
     };
 
-    //Agregar productos a carrito
+    //Agregar producto a carrito
     async addProductToCart(req, res) {
         const cid = req.params.cid;
         const pid = req.params.pid;
         const quantity = req.body.quantity || 1;
 
-
+        // Verificamos si hay un carrito en la petición
         if (!cid) {
             console.log('No CID present');
             return res.status(400).render("products", { errors: { auth: "Debes estar logeado para agregar productos al carrito" } });
-        } else {
-            try {
-                const cartUpdated = await cartService.addProductToCart(cid, pid, quantity)
-                return res.status(200).json({ message: "Producto agregado al carrito con éxito", cart: cartUpdated });
-            } catch (error) {
-                req.logger.error("Error al agregar producto al carrito:", error);
-                console.log("Error al agg producto al cart");
-                return res.status(500).send("Error al agregar producto al carrito:");
+        }
+
+        try {
+            //Capturamos el usuario y el producto
+            const user = await UserModel.findOne({ cart: cid }).exec();
+            const product = await productService.getProductById(pid);
+
+            // Verificamos si el usuario está tratando de agregar su propio producto
+            if (user.email === product.owner) {
+                req.logger.info("No puedes agregar tus propios productos al carrito");
+                return res.status(400).render("products", { errors: { auth: "No puedes agregar tus propios productos al carrito" } });
             }
+
+            // Agregamos el producto al carrito
+            const cartUpdated = await cartService.addProductToCart(cid, pid, quantity)
+            return res.status(200).json({ message: "Producto agregado al carrito con éxito", cart: cartUpdated });
+        } catch (error) {
+            req.logger.error("Error al agregar producto al carrito:", error);
+            return res.status(500).send("Error al agregar producto al carrito:");
         }
     };
 

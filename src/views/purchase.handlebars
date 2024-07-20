@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,7 +21,8 @@
             margin-top: 50px;
         }
 
-        .summary-header, .summary-total {
+        .summary-header,
+        .summary-total {
             background-color: #6a1b9a;
             color: white;
             padding: 20px;
@@ -29,7 +31,8 @@
             margin-bottom: 30px;
         }
 
-        .summary-item, .out-of-stock-item {
+        .summary-item,
+        .out-of-stock-item {
             background-color: white;
             padding: 20px;
             border-radius: 10px;
@@ -52,6 +55,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
@@ -183,20 +187,21 @@
                     },
                     body: JSON.stringify({ email, subject, message })
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Correo enviado correctamente');
-                    } else {
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Correo enviado correctamente');
+                        } else {
+                            alert('Error al enviar el correo');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
                         alert('Error al enviar el correo');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error al enviar el correo');
-                });
+                    });
             });
         });
     </script>
 </body>
+
 </html>
