@@ -20,7 +20,7 @@ router.post("/:cid/products/:pid", cartController.addProductToCart);
 //Eliminar producto de carrito
 router.delete("/:cid/products/:pid", cartController.deleteProductFromCart);
 
-//Actualizar productos del carrito
+//Actualizar producto y cantidad del carrito
 router.put("/:id", cartController.updateCartProducts);
 
 //Actualizar cantidad de productos del carrito

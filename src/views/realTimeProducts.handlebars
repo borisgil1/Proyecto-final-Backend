@@ -1,6 +1,10 @@
 <h1>Productos</h1>
 
 <h2>Lista de productos</h2>
+<p>Bienvenido, {{user.name}} {{user.last_name}}!</p>
+<p>Rol:</p> <p id ="role">{{user.role}}</p>
+<p>Correo:</p> <p id ="email">{{user.email}}</p>
+
 <div class="row" id="lista-productos"></div>
 
 <div id="contenedorProductos"></div>
@@ -19,9 +23,9 @@
         <option value="true"> Activo </option>
         <option value="false"> Inactivo </option>
     </select>
-        <input type="text" id="thumbnails" placeholder="thumbnails (separa por comas)">
+    <input type="text" id="thumbnails" placeholder="thumbnails (separa por comas)">
     <button type="button" id="btnEnviar"> Enviar </button>
 </form>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
-<script src="js/main.js"></script>
+<script src="js/realtime.js"></script>

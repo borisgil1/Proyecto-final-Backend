@@ -34,8 +34,8 @@ router.get("/home", viewsController.home);
 //Vista admin
 router.get("/admin", viewsController.admin);
 
-//Vista realtimeproducts
-router.get("/realtimeproducts", passportCall("jwt"), authorization("Administrador"), viewsController.realTime);
+//Vista realtimeproducts, tienen acceso admin y premium
+router.get("/realtimeproducts", passportCall("jwt"), authorization("admin", "premium"), viewsController.realTime);
 
 //Vista contact
 router.get("/contact", viewsController.contact);
@@ -57,8 +57,6 @@ router.get("/confirmation", viewsController.confirmation);
 
 //Carrito si no está logeado
 router.get("/carts", viewsController.cartError);
-
-//router.get("/passout", viewsController.logout);
 
 //A esta ruta hay ponerle un DTO para que solo mande nombre, apellido y rol
 router.get("/current", passportCall("jwt"), (req, res) => {

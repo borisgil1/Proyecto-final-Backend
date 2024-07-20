@@ -42,7 +42,7 @@
           <a class="nav-link" href="/contact">Contáctanos</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/carts/{{user.Carrito}}">Carrito</a>
+          <a class="nav-link" href="/carts/{{user.cart}}">Carrito</a>
         </li>
       </ul>
     </div>
@@ -53,14 +53,27 @@
   <!-- Verificación de inicio de sesión -->
   {{#if user}}
   <div class="profile-card">
-    <p>Bienvenido, {{user.Nombre}} {{user.Apellido}}!</p>
-    <p>Rol: {{user.Rol}}</p>
+    <p>Bienvenido, {{user.name}} {{user.last_name}}!</p>
+    <p>Rol: {{user.role}}</p>
     <form action="/api/users/logout" method="POST">
       <button class="btn" type="submit">Logout</button>
     </form>
+
+    {{#if this.isUser}}
+    <a class="btn" href="/chat">Chat en vivo</a>
+    <a class="btn" href="/products">Tienda</a>
+    {{/if}}
+
+    {{#if this.isAdmin}}
+    <a class="btn" href="/realtimeproducts">Modificar Productos</a>
+    {{/if}}
+
+    {{#if this.isPremium}}
     <a class="btn" href="/chat">Chat en vivo</a>
     <a class="btn" href="/products">Tienda</a>
     <a class="btn" href="/realtimeproducts">Modificar Productos</a>
+    {{/if}}
+
   </div>
   {{else}}
   <div class="text-center mt-4">

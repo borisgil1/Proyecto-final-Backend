@@ -18,11 +18,11 @@ const passportCall = (strategy) => {
             }
             //Si no hay usuario tiramos un 401
             if (!user) {
-                return next();           
+                return next();
                 //req.logger.warning("Necesitas logearte para acceder");
                 //return res.status(401).send({ error: "Necesitas logearte para acceder" });
             }
-            
+
             //Si marcha bien req.user guarda el usuario y avanzamos con el next
             req.user = user;
             next();
@@ -32,35 +32,37 @@ const passportCall = (strategy) => {
 
 
 //Autorización según el rol
-const authorization = (role) => {
+const authorization = (...allowedRoles) => { //Acepta multiples roles
     //Retorna metodo asincronico
     return async (req, res, next) => {
-        //Si en el usuario q tenemos cargado el rol no coincide con el rol que yo estoy pasando por parametro mensaje negativo
-        if (req.user.role !== role) {
-            req.logger.warning("No tienes permiso para acceder a esta ruta, no tienes el rol de  " + role);
-            return res.status(403).send({ messege: "No tienes permiso para acceder a esta ruta, no tienes el rol de " + role });
+        const userRole = req.user.role;
+        if (!allowedRoles.includes(userRole)) { //Verifica si el rol de usuario está en la lista de permitidos
+            //Si en el usuario q tenemos cargado el rol no coincide con el rol que yo estoy pasando por parametro mensaje negativo
+            req.logger.warning("No tienes permiso para acceder a esta ruta, no tienes el rol de " + allowedRoles );
+            return res.status(403).send({ messege: "No tienes permiso para acceder a esta ruta, no tienes el rol de " + allowedRoles });
         }
         next();
     };
 };
 
 const authorization2 = (role) => {
-    return (req, res, next) => {   
+    return (req, res, next) => {
 
-    // Permitir acceso si el usuario no está autenticado
-    if (!req.user) {
-        return next();
+        // Permitir acceso si el usuario no está autenticado
+        if (!req.user) {
+            return next();
+        }
+
+        // Denegar acceso si el usuario es administrador
+        if (req.user.role === role) {
+            req.logger.warning("No tienes permiso para acceder a esta ruta como administrador");
+            return res.status(403).send({ message: "No tienes permiso para acceder a esta ruta como administrador" });
+        }
+
+        // Permitir acceso si el usuario está autenticado y no es administrador
+        next();
     }
-
-    // Denegar acceso si el usuario es administrador
-    if (req.user.role === role) {
-        req.logger.warning("No tienes permiso para acceder a esta ruta como administrador");
-        return res.status(403).send({ message: "No tienes permiso para acceder a esta ruta como administrador" });
-    }
-
-    // Permitir acceso si el usuario está autenticado y no es administrador
-    next();
-}} ;
+};
 
 
 module.exports = { passportCall, authorization, authorization2 };

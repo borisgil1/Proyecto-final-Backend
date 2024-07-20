@@ -91,7 +91,7 @@
                     <a class="nav-link" href="/contact">Contáctanos</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/carts/666fce3d59d6103fa3c85a11">Carrito</a>
+                    <a class="nav-link" href="/carts/{{user.cart}}">Carrito</a>
                 </li>
             </ul>
         </div>
@@ -100,7 +100,7 @@
  {{#if user}}
     <div class="container">
         <div class="cart-header">
-             <p>Carrito de compras de {{user.Nombre}} {{user.Apellido}}!</p>
+             <p>Carrito de compras de {{user.Name}} {{user.Last_name}}!</p>
         </div>
 
         {{#each products}}

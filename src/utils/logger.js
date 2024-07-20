@@ -40,7 +40,7 @@ const loggerDes = winston.createLogger({
         //Transporte de consola, le paso el nivel y el formato
         new winston.transports.Console({
             //Que tome nivel debug y superiores. El nivel es de donde empieza a registrar
-            level: "debug",
+            level: "info", // ponerlo en dbug
             //Colores de los niveles
             //Formato para que tenga los colores
             format: winston.format.combine(

@@ -47,6 +47,7 @@ class viewsController {
         let cid = req.params.cid;
         try {
             const cart = await cartRepository.getCartById(cid);
+            
             if (cart) {
 
                 // Calcular el precio total del carrito
@@ -108,7 +109,8 @@ class viewsController {
     };
 
     async realTime(req, res) {
-        res.render("realtimeproducts");
+        const userDto = new UserDTO(req.user.first_name, req.user.last_name, req.user.role, req.user.cart, req.user.age, req.user.email);
+        res.render("realTimeProducts", { user: userDto});
     };
 
     async reset(req, res) {
@@ -143,8 +145,10 @@ class viewsController {
         }
         //Si hay usuario autenticado creo el DTO con los datos del usaurio : 
         const userDto = new UserDTO(req.user.first_name, req.user.last_name, req.user.role, req.user.cart, req.user.age);
+        const isUser = req.user.role === 'usuario';
         const isAdmin = req.user.role === 'admin';
-        res.render("profile", { user: userDto, isAdmin });
+        const isPremium = req.user.role === 'premium';
+        res.render("profile", { user: userDto, isAdmin, isPremium, isUser });
     }
 
     async purchase(req, res) {

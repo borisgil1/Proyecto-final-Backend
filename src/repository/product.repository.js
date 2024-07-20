@@ -3,16 +3,22 @@ const ProductsModel = require("../models/products.model");
 const { logger } = require("../utils/logger.js");
 
 class ProductRepository {
-    async addProduct({ title, description, price, img, code, stock, category, thumbnails }) {
+    async addProduct({ title, description, price, img, code, stock, category, thumbnails, owner }) {
         try {
             if (!title || !description || !price || !code || !stock || !category) {
                 logger.error("Todos los campos son obligatorios");
                 return;
             }
+
+            //Validar que el código sea único
             const existingProduct = await ProductsModel.findOne({ code: code });
+
             if (existingProduct) {
-                throw new Error("El código debe ser único");
+               logger.warning("El código debe ser único");
+               return;
             }
+
+            //Si el codigo es unico y están presentes los campos obligatorios creamos el objeto
             const newProduct = new ProductsModel({
                 title,
                 description,
@@ -22,14 +28,17 @@ class ProductRepository {
                 stock,
                 category,
                 status: true,
-                thumbnails: thumbnails || []
+                thumbnails: thumbnails || [],
+                owner
             });
+            
+            //Guardamos
             await newProduct.save();
             logger.info(`Producto agregado exitosamente: ${JSON.stringify(newProduct.toObject(), null, 2)}`);
             return newProduct;
         } catch (error) {
-            logger.error("Error al agregar un producto", error);
-            throw error;
+            logger.error("Error al agregar nuevo producto:", error);
+            throw new Error("Error al agregar nuevo producto");
         }
     }
 

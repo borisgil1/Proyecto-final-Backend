@@ -2,8 +2,11 @@ MONGO_URL=mongodb+srv://coderhouse:coderhouse@cluster0.2zgtivj.mongodb.net/ecomm
 
 PORT=8080
 
-usuario: borisgil1@hotmail.com
+usuario premium: borisgil1@hotmail.com
 contraseña: 1
 
-admincoder@coder.com
-1234
+usuario user: boris@hotmail.com
+contraseña 1
+
+usuario admin admincoder@coder.com
+contraseña 1234

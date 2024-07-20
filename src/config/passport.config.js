@@ -1,12 +1,8 @@
 //Estrategias de passport y JWT, son middlwares. Autenticación y autorización
-
 const passport = require("passport");
 const UserModel = require("../models/user.model.js");
 const jwt = require("passport-jwt");
-const local = require("passport-local");
-const { isValidPassword, createHash } = require("../utils/hashbcrypt.js");
 
-const LocalStrategy = local.Strategy;
 //Instanciar nueva estragegia
 const JWTStrategy = jwt.Strategy;
 //Decodificar el tooken que está dentro de la cookie
@@ -30,69 +26,6 @@ const cookieExtractor = (req) => {
 
 
 const initializePassport = () => {
-    //Register strategy local
-    passport.use("register", new LocalStrategy({
-        passReqToCallback: true,
-        usernameField: "email",
-    }, async (req, username, password, done) => {
-        const { first_name, last_name, email, age } = req.body;
-
-        try {
-            let user = await UserModel.findOne({ email });
-
-            if (user) {
-                return done(null, false);
-            } else {
-                let newUser = {
-                    first_name,
-                    last_name,
-                    email,
-                    password: createHash(password),
-                    age,
-                };
-
-                let result = await UserModel.create(newUser);
-                return done(null, result);
-            }
-        } catch (error) {
-            return done(error);
-        }
-    }));
-
-    //Login strategy local
-    passport.use("login", new LocalStrategy({
-        usernameField: "email",
-    }, async (email, password, done) => {
-        try {
-            let user = await UserModel.findOne({ email });
-
-            if (!user) {
-                return done(null, false);
-            }
-
-            if (!isValidPassword(password, user)) {
-                return done(null, false);
-            }
-
-            return done(null, user);
-        } catch (error) {
-            return done(error);
-        }
-    }));
-
-    passport.serializeUser((user, done) => {
-        done(null, user._id);
-    });
-
-    passport.deserializeUser(async (id, done) => {
-        try {
-            let user = await UserModel.findById(id);
-            done(null, user);
-        } catch (error) {
-            done(error, null);
-        }
-    });
-
     //Estrategia GitHub
     passport.use("github", new GitHubStrategy({
         clientID: "Iv23li2pdqvE2618g9dw",

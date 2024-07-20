@@ -7,7 +7,7 @@ const { logger } = require("../utils/logger.js");
 const bcrypt = require("bcrypt");
 const EmailManager = require("../service/email.js");
 const emailManager = new EmailManager();
-const {generateResetToken} = require("../utils/resetoken.js");
+const { generateResetToken } = require("../utils/resetoken.js");
 
 class UserController {
     //Registro con JWT
@@ -56,13 +56,13 @@ class UserController {
 
             //una vez me registro me lleva al perfil
             res.redirect("/profile");
+            req.logger.info("Usuario registrado exitosamente")
 
         } catch (error) {
             req.logger.error("Error interno del servidor", error)
             res.status(500).send("Error interno del servidor")
         }
     }
-
 
     //Login con JWT 
     async loginJwt(req, res) {
@@ -103,6 +103,7 @@ class UserController {
             //                Clave        valor       tiempo, 1hr       la cookie  solo se accede desde http  
             res.cookie("coderCookieToken", token, { maxAge: 60 * 60 * 1000, httpOnly: true });
             res.redirect("/profile");
+            req.logger.info("Login exitoso")
 
         } catch (error) {
             req.logger.error("Error interno del servidor", error)
@@ -149,7 +150,7 @@ class UserController {
     //Restablecer contraseña
     async resetPassword(req, res) {
         const { email } = req.body;
-       
+
         try {
             //Busco el usuario por email en la bdd
             const user = await UserModel.findOne({ email });
@@ -161,7 +162,7 @@ class UserController {
             //Si hay usuario genero el token (utils)
             const resetToken = generateResetToken();
             const expireTime = new Date(Date.now() + 60 * 60 * 1000); //60 minutos a partir de ahora
-            
+
             //Agrego el token y el tiempo de expiración al usuario
             user.resetToken = {
                 token: resetToken,
@@ -199,14 +200,14 @@ class UserController {
             // Validamos si existe el token y el tiempo de expiración
             if (!user.resetToken || user.resetToken.token !== token || user.resetToken.expire < Date.now()) {
                 req.logger.error("Token inválido o expirado");
-                return res.status(400).render("change-password", {errors: { token: "Token inválido o expirado"}});
+                return res.status(400).render("change-password", { errors: { token: "Token inválido o expirado" } });
             }
 
             // Validamos que la contraseña no sea igual a la anterior
             const isPasswordValid = bcrypt.compareSync(newPassword, user.password);
             if (isPasswordValid) {
                 req.logger.error("La contraseña no puede ser igual que la anterior");
-               return res.status(400).render("change-password", { errors: {newPassword: "La contraseña no puede ser igual que la anterior"} });
+                return res.status(400).render("change-password", { errors: { newPassword: "La contraseña no puede ser igual que la anterior" } });
             }
 
             // Restablecemos contraseña
@@ -225,6 +226,39 @@ class UserController {
         } catch (error) {
             req.logger.error("Error interno del servidor", error);
             res.status(500).render("password-error", { errors: "Error interno del servidor" });
+        }
+    }
+
+    //Cambio de rol del usario
+    async changeRole(req, res) {
+        const { uid } = req.params;{}
+        try {
+
+            //Busco el usuario por email
+            const user = await UserModel.findById(uid);
+           
+            //Valido que el usuario exista
+            if (!user) {
+                logger.error(`Usuario con UID ${uid} no encontrado`);
+                return res.status(404).json({ message: "Usuario no encontrado" });
+            }
+          
+            //Si el usario existe y es user lo cambio a premium 
+            if (user.role === "usuario") {
+                user.role = "premium";
+
+            //Si es premium lo cambio a user
+            } else if (user.role === "premium") {
+                user.role = "usuario";
+            }
+
+            await user.save();
+
+            req.logger.info({ message: "Se cambió el rol correctamente a " + user.role, user: user });
+            return res.json({ message: "Se cambió el rol correctamente a " + user.role, user: user });
+        } catch (error) {
+            req.logger.error("Error en el cambio de rol:", error);
+            return res.status(500).json({ message: "Error interno del servidor" });
         }
     }
 }
