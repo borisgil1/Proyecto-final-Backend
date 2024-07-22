@@ -86,7 +86,6 @@ class viewsController {
         res.render("login");
     }
 
-
     async chat(req, res) {
         res.render("chat");
     };

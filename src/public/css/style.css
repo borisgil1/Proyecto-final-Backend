@@ -1,30 +1,29 @@
 body {
     background-color: #f3e5f5;
     color: #4a148c;
+}
 
-}h1 {
-    color:#6a1b9a;
+h1 {
+    color: #6a1b9a;
     text-align: center;
     font-size: 40px;
+    margin-top: 20px;
 }
 
 h2 {
-    color: #6a1b9a;;
+    color: #6a1b9a;
+    ;
     font-size: 25px;
 }
 
-.resumenCompra {
-    color: white;
+.full-width-navbar {
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1030;
+    /* Para asegurarse de que esté por encima de otros elementos */
 }
-
-.card-height {
-    height: 200px;
-}
-
-.title {
-            text-align: center;
-            margin-top: 20px;
-        }
 
 .navbar {
     background-color: #6a1b9a;
@@ -58,25 +57,48 @@ h2 {
     margin: 20px 0;
 }
 
+.resumenCompra {
+    color: white;
+}
+
+.card-height {
+    height: 200px;
+}
+
+.title {
+    text-align: center;
+    margin-top: 20px;
+}
+
+
+
 .btnprimary {
-  color: #ffffff !important;
-  background-color: #6a1b9a !important;
+    color: #ffffff !important;
+    background-color: #6a1b9a !important;
 }
 
 .btnAddtoCart {
     color: #ffffff;
     background-color: #6a1b9a;
-    border-radius: 5px; /* Hace que el botón sea redondeado */
-    padding: 10px 20px; /* Ajusta el relleno para que el botón sea más grande */
-    border: none; /* Elimina el borde */
-    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
-    transition: background-color 0.3s; /* Agrega una transición suave al cambio de color de fondo */
-    display: block; /* Hace que el botón sea un bloque */
-    margin: 0 auto; /* Centra el botón horizontalmente */
+    border-radius: 5px;
+    /* Hace que el botón sea redondeado */
+    padding: 10px 20px;
+    /* Ajusta el relleno para que el botón sea más grande */
+    border: none;
+    /* Elimina el borde */
+    cursor: pointer;
+    /* Cambia el cursor al pasar sobre el botón */
+    transition: background-color 0.3s;
+    /* Agrega una transición suave al cambio de color de fondo */
+    display: block;
+    /* Hace que el botón sea un bloque */
+    margin: 0 auto;
+    /* Centra el botón horizontalmente */
 }
 
 .btnAddtoCart:hover {
-    background-color: #4a148c; /* Cambia el color de fondo al pasar el ratón sobre el botón */
+    background-color: #4a148c;
+    /* Cambia el color de fondo al pasar el ratón sobre el botón */
 }
 
 .profile-card {
@@ -86,36 +108,84 @@ h2 {
     background-color: #f2f2f2;
     border-radius: 5px;
     text-align: center;
-  }
+}
 
-  .profile-card p {
+.profile-card p {
     margin-bottom: 10px;
-  }
+}
 
-  .profile-card .btn {
+.profile-card .btn {
     display: block;
     margin: 20px auto;
     padding: 10px 20px;
-    background-color: #6a1b9a; /* Color púrpura */
+    background-color: #6a1b9a;
+    /* Color púrpura */
     color: #fff;
     border: none;
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
-  }
+}
 
-  .profile-card .btn:hover {
-    background-color: #9932CC; /* Cambio de color al hacer hover */
-  }
+.profile-card .btn:hover {
+    background-color: #9932CC;
+    /* Cambio de color al hacer hover */
+}
 
-  .profile-card a {
+.profile-card a {
     display: block;
     margin-bottom: 10px;
-    color: #6a1b9a; 
+    color: #6a1b9a;
     text-decoration: none;
     font-weight: bold;
-  }
+}
 
-  .error {
+.error {
     color: red;
-  }
+}
+
+/*Footer*/
+
+footer {
+    background-color: #6a1b9a;
+    font-size: 18px;
+    color: #fafafa;
+    text-align: center;
+    padding: 20px 0;
+}
+
+
+footer p {
+    margin: 5px 0;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+.visa {
+    width: 100px;
+    margin-right: 50px;
+    margin-left: -20px;
+}
+
+.master {
+    width: 70px;
+    margin-right: 50px;
+}
+
+.pay {
+    width: 200px;
+    margin-left: -10px;
+    margin-top: 10px;
+}
+
+
+.banco {
+    width: 180px;
+    margin-left: 10px;
+    margin-right: 50px;
+    margin-top: -10px;
+}
+
+.nequi {
+    width: 160px;
+}
