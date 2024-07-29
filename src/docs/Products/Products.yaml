@@ -1,0 +1,151 @@
+paths:
+  /api/products:
+    get:
+      summary: Obtener todos los productos
+      tags:
+        - Productos
+      responses:
+        "200":
+          description: Productos recuperados exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  products:
+                    type: array
+                    items:
+                      type: object
+        "500":
+          description: Error interno del servidor
+
+    post:
+      summary: Crear un nuevo producto
+      tags:
+        - Productos
+      requestBody:
+        description: Datos del nuevo producto
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: number
+                img:
+                  type: string
+                code:
+                  type: string
+                stock:
+                  type: integer
+                category:
+                  type: string
+                thumbnails:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Producto creado exitosamente
+        "400":
+          description: Datos inválidos para el producto
+        "500":
+          description: Error interno del servidor
+
+  /api/products/{id}:
+    get:
+      summary: Obtener un producto por ID
+      tags:
+        - Productos
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Producto encontrado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  product:
+                    type: object
+        "404":
+          description: Producto no encontrado
+        "500":
+          description: Error interno del servidor
+
+    put:
+      summary: Actualizar un producto
+      tags:
+        - Productos
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto a actualizar
+          schema:
+            type: string
+      requestBody:
+        description: Datos actualizados del producto
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: number
+                img:
+                  type: string
+                code:
+                  type: string
+                stock:
+                  type: integer
+                category:
+                  type: string
+      responses:
+        "200":
+          description: Producto actualizado exitosamente
+        "404":
+          description: Producto no encontrado
+        "500":
+          description: Error interno del servidor
+
+    delete:
+      summary: Eliminar un producto
+      tags:
+        - Productos
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto a eliminar
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Producto eliminado exitosamente
+        "404":
+          description: Producto no encontrado
+        "403":
+          description: No tienes permiso para eliminar este producto
+        "500":
+          description: Error interno del servidor

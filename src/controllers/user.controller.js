@@ -1,6 +1,6 @@
 //Registro Controller
 const UserModel = require("../models/user.model.js");
-const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken"); //jwt para identificar usuarios
 const { createHash, isValidPassword } = require("../utils/hashbcrypt.js");
 const CartsModel = require("../models/carts.model.js");
 const { logger } = require("../utils/logger.js");

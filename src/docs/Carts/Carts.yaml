@@ -1,0 +1,314 @@
+paths:
+  /api/carts:
+    post:
+      summary: Crear un nuevo carrito
+      tags:
+        - Carritos
+      responses:
+        '201':
+          description: Carrito creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  newCart:
+                    type: object
+                    properties:
+                      products:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            product:
+                              type: string
+                            quantity:
+                              type: integer
+        '500':
+          description: Error al crear el carrito
+          
+    get:
+      summary: Obtener todos los carritos
+      tags:
+        - Carritos
+      responses:
+        '200':
+          description: Lista de carritos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  carts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                        products:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              product:
+                                type: string
+                              quantity:
+                                type: integer
+        '500':
+          description: Error al obtener los carritos
+
+  /api/carts/{cid}:
+    get:
+      summary: Obtener un carrito por ID
+      tags:
+        - Carritos
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Carrito encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  cart:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      products:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            product:
+                              type: string
+                            quantity:
+                              type: integer
+        '404':
+          description: Carrito no encontrado
+        '500':
+          description: Error al obtener el carrito
+
+    delete:
+      summary: Vaciar el carrito
+      tags:
+        - Carritos
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Carrito vaciado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  cart:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      products:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            product:
+                              type: string
+                            quantity:
+                              type: integer
+        '404':
+          description: Carrito no encontrado
+        '500':
+          description: Error al vaciar el carrito
+
+  /api/carts/{cid}/products/{pid}:
+    post:
+      summary: Agregar un producto al carrito
+      tags:
+        - Carritos
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+      responses:
+        '200':
+          description: Producto agregado al carrito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  cart:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      products:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            product:
+                              type: string
+                            quantity:
+                              type: integer
+        '400':
+          description: Error en la solicitud (ej. producto propio)
+        '500':
+          description: Error al agregar el producto al carrito
+
+    delete:
+      summary: Eliminar un producto del carrito
+      tags:
+        - Carritos
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Producto eliminado del carrito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  cart:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      products:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            product:
+                              type: string
+                            quantity:
+                              type: integer
+        '404':
+          description: Carrito o producto no encontrado
+        '500':
+          description: Error al eliminar el producto del carrito
+
+  /api/carts/{cid}/purchase:
+    post:
+      summary: Finalizar la compra
+      tags:
+        - Carritos
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        '200':
+          description: Compra finalizada con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  ticket:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      purchase_datetime:
+                        type: string
+                      amount:
+                        type: number
+                      purchaser:
+                        type: string
+                  purchasedProducts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        Producto:
+                          type: string
+                        Precio:
+                          type: number
+                        Cantidad:
+                          type: integer
+                  outOfStockProducts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        Producto:
+                          type: string
+                        Precio:
+                          type: number
+        '400':
+          description: No hay productos en el carrito o error en la solicitud
+        '500':
+          description: Error al procesar la compra
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string

@@ -57,7 +57,7 @@ class cartController {
 
         // Verificamos si hay un carrito en la petición
         if (!cid) {
-            console.log('No CID present');
+            req.logger.info("Debes estar logeado para agregar productos al carrito");
             return res.status(400).render("products", { errors: { auth: "Debes estar logeado para agregar productos al carrito" } });
         }
 

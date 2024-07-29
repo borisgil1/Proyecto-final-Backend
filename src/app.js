@@ -1,58 +1,46 @@
 //App: Inicializa el servidor
 
-//Express
+// Importaciones y configuraciones iniciales
 const express = require("express");
-//Creamos nuestra app
-const app = express();
-//Rutas
+const exphbs = require("express-handlebars");
+const socket = require("socket.io");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
+const MongoStore = require("connect-mongo");
+const passport = require("passport");
+const nodemailer = require("nodemailer");// Permite reliazar el envio de mensajería desde nuestra app
+const swaggerUiExpress = require("swagger-ui-express");//Genera una interfaz grafica para ver toda la documentación.
+const swaggerJSDoc = require("swagger-jsdoc"); //Permite escribir la configuración en un archivo.yaml
+
+//Importación de rutas
 const productsRouter = require("./routes/products.router.js");
 const cartsRouter = require("./routes/carts.router.js");
 const viewsRouter = require("./routes/views.router.js");
 const userRouter = require("./routes/user.router.js");
 const mockingRouter = require("./routes/mocking.js");
-//Handlebars
-const exphbs = require("express-handlebars");
-//Socket
-const socket = require("socket.io");
-//Repository para la vista realTimeProducts
+
+// Repositorios y modelos
 const ProductRepository = require("./repository/product.repository.js");
+const MessagesModel = require("./models/messages.model.js");
 const productRepository = new ProductRepository();
-//Base de datos
+
+// Base de datos y configuración
 require("./database.js");
-//Chat
-const MessagesModel = require("./models/messages.model.js")
-//Cookies 
-const session = require("express-session");
-const cookieParser = require("cookie-parser");
-//FileStore
-const FileStore = require("session-file-store");
-//const fileStore = new FileStore(session);
-//MongoStore
-const MongoStore = require("connect-mongo");
-//Passport
-const passport = require("passport");
 const initializePassport = require("./config/passport.config.js");
-//Config Object
-const configObject = require("./config/config.js")
+const configObject = require("./config/config.js");
 const { port } = configObject;
-//Program
-//const program = require ("program");
-//Nodemailer: Permite reliazar el envio de mensajería desde nuestra app
-const nodemailer = require("nodemailer");
-//Middleware - Error
+
+// Middleware y utilidades
 const errorMiddleware = require("./middleware/error.js");
-//Logger
-const {addLogger} = require("./utils/logger.js");
+const { addLogger } = require("./utils/logger.js");
 
-
-//Handlebar
+// Configuración de la aplicación
+const app = express();
 app.engine("handlebars", exphbs.engine());
 app.set("view engine", "handlebars");
 app.set("views", "./src/views");
 
-
-//Middleware
-app.use(express.json())
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("./src/public"));
 app.use(cookieParser());
@@ -61,50 +49,59 @@ app.use(session({
     resave: true,
     saveUninitialized: true,
     store: MongoStore.create({
-        mongoUrl: "mongodb+srv://coderhouse:coderhouse@cluster0.2zgtivj.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster0", ttl: 100
+        mongoUrl: "mongodb+srv://coderhouse:coderhouse@cluster0.2zgtivj.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster0",
+        ttl: 100
     })
-}))
+}));
 
-
-//Passport
 app.use(passport.initialize());
 app.use(passport.session());
 initializePassport();
 
-
-//Middleware - Logger
 app.use(addLogger);
 
+//Configuración de Swagger
+const swaggerOptions = {
+    definition: { //Permite configurar la documentación
+        openapi: "3.0.1",
+        info: {
+            title: "Documentation Ecommerce API",
+            description: "Ecommerce",
+        }
+    },
+    apis: ["./src/docs/**/*.yaml"], //Ubicación archivos yaml. Lee todos los archivos yaml dentro de docs
+}
 
-//Rutas
+//Conectamos Swagger a nuestro servidor Express
+const spects = swaggerJSDoc(swaggerOptions);
+
+// Definición de rutas
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/", viewsRouter);
 app.use("/api/users", userRouter);
 app.use("/api/mockingproducts", mockingRouter);
-//Middleware - error
-app.use(errorMiddleware);
+app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(spects));
 
+// Middleware de manejo de errores
+app.use(errorMiddleware);
 
 // Ruta de prueba para logs
 app.get("/loggertest", (req, res) => {
     req.logger.http("mensaje http");
     req.logger.info("mensaje info");
-    req.logger.warning("mensaje WARNING");      
+    req.logger.warning("mensaje WARNING");
     req.logger.error("mensaje ERROR");
     res.send("Logs generados");
- });
+});
 
-
-//Listen
+// Configuración del servidor
 const httpServer = app.listen(port, () => {
-    console.log(`Escuchando en el puerto ${port}`);
-})
+    console.log(`Listening on port ${port}`);
+});
 
-
-//instancia Socket del servidor
+// Configuración de Socket.io
 const io = socket(httpServer);
-
 
 //Conección cliente
 io.on("connection", async (socket) => {
@@ -129,7 +126,6 @@ io.on("connection", async (socket) => {
         socket.emit("products", await productRepository.getProducts());
     })
 
-
     //Recibir evento para el Chat
     //Recupera los mensaje de mongo
     socket.on("message", async (data) => {
@@ -141,9 +137,7 @@ io.on("connection", async (socket) => {
 
 });
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 //SMTP = configuración del servicio SMTP, para enviar mensajes
 const transporter = nodemailer.createTransport({
