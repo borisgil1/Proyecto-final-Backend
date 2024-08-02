@@ -6,7 +6,7 @@ class ProductRepository {
     async addProduct({ title, description, price, img, code, stock, category, thumbnails, owner }) {
         try {
             if (!title || !description || !price || !code || !stock || !category) {
-                logger.error("Todos los campos son obligatorios");
+                logger.warning("Todos los campos son obligatorios");
                 return;
             }
 

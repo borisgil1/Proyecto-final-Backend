@@ -136,6 +136,12 @@ class viewsController {
         res.render("cart-error");
     };
 
+    async current (req, res) {
+        const userDto = new UserDTO(req.user.first_name, req.user.last_name, req.user.role, req.user.cart, req.user.age, req.user.email);
+        const isAdmin = req.user.role === 'admin';
+        res.send(("profile", { user: userDto, isAdmin }));
+    };
+
     async profile(req, res) {
         //Valido si hay usuario autenticado
         if (!req.user) {

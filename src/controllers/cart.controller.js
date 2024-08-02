@@ -15,7 +15,7 @@ class cartController {
                 products: []
             };
             await cartService.addCart(newCart);
-            return res.status(201).send({ message: "Carrito nuevo agregado", newCart });
+            return res.status(201).json(newCart);
         } catch (error) {
             req.logger.error("Error al crear nuevo carrito", error);
             return res.status(500).send("Error al crear nuevo carrito");

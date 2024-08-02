@@ -16,7 +16,6 @@ dotenv.config({
     path: mode === "production" ? "./.env.production" : "./.env.development"
 });
 
-
 // Crear el objeto de configuración y enviamos los datos
 const configObject = {
     // Enviar el puerto que viene de process.env.PUERTO

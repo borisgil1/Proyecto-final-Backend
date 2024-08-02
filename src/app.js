@@ -28,7 +28,7 @@ const productRepository = new ProductRepository();
 require("./database.js");
 const initializePassport = require("./config/passport.config.js");
 const configObject = require("./config/config.js");
-const { port } = configObject;
+const {port} = configObject;
 
 // Middleware y utilidades
 const errorMiddleware = require("./middleware/error.js");

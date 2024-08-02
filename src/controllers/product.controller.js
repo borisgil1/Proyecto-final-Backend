@@ -6,7 +6,6 @@ const CustomError = require("../service/errors/custom-error");
 const { generateProductError } = require("../service/errors/info");
 const EErrors = require("http-errors");
 const { addLogger } = require("../utils/logger.js");
-const UserModel = require("../models/user.model.js");
 
 
 class productController {
@@ -53,7 +52,6 @@ class productController {
             }
     
             const product = await productService.addProduct(newProduct);
-            req.logger.info("El nuevo producto ha sido agregado exitosamente", product);
             res.json({ message: "El producto ha sido agregado", product: product });
         } catch (error) {
             req.logger.error("Error al agregar nuevo producto", error);

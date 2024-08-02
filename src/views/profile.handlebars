@@ -1,36 +1,38 @@
 <body>
 
-  <h1 class="mt-3 mb-4">Mi perfil</h1>
+  <h1 class="mt-4 mb-4">Mi perfil</h1>
 
   <!-- Verificación de inicio de sesión -->
   {{#if user}}
   <div class="profile-card mb-5">
     <p>Bienvenido, {{user.name}} {{user.last_name}}!</p>
     <p>Rol: {{user.role}}</p>
-    <form action="/api/users/logout" method="POST">
-      <button class="btn" type="submit">Logout</button>
-    </form>
 
     {{#if this.isUser}}
-    <a class="btn" href="/chat">Chat en vivo</a>
     <a class="btn" href="/products">Tienda</a>
+    <a class="btn" href="/chat">Chat en vivo</a>
+    {{/if}}
+
+    {{#if this.isPremium}}
+    <a class="btn" href="/products">Tienda</a>
+    <a class="btn" href="/realtimeproducts">Modificar Productos</a>
+    <a class="btn" href="/chat">Chat en vivo</a>
     {{/if}}
 
     {{#if this.isAdmin}}
     <a class="btn" href="/realtimeproducts">Modificar Productos</a>
     {{/if}}
 
-    {{#if this.isPremium}}
-    <a class="btn" href="/chat">Chat en vivo</a>
-    <a class="btn" href="/products">Tienda</a>
-    <a class="btn" href="/realtimeproducts">Modificar Productos</a>
-    {{/if}}
+    <form action="/api/users/logout" method="POST">
+      <button class="btn" type="submit">Logout</button>
+    </form>
 
   </div>
+  
   {{else}}
-  <div class="text-center mt-5 mb-5">
-    <p>No has iniciado sesión.</p>
-    <a class="btn btnprimary mb-5" href="/login">Iniciar sesión</a>
+  <div class="text-center mt-4 mb-5">
+    <p class="text-center mb-3">No has iniciado sesión.</p>
+    <a class="btn btnprimary mt-3 mb-3" href="/login">Iniciar sesión</a>
   </div>
   {{/if}}
 

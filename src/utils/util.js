@@ -16,11 +16,10 @@ const passportCall = (strategy) => {
             if (error) {
                 return next(error);
             }
-            //Si no hay usuario tiramos un 401
+            //Si no hay usuario se envía una respuesta
             if (!user) {
-                return next();
-                //req.logger.warning("Necesitas logearte para acceder");
-                //return res.status(401).send({ error: "Necesitas logearte para acceder" });
+                req.logger.warning("Necesitas logearte para acceder");
+                return res.status(401).send({ error: "No estás autenticado" });
             }
 
             //Si marcha bien req.user guarda el usuario y avanzamos con el next
@@ -30,6 +29,21 @@ const passportCall = (strategy) => {
     };
 };
 
+//Permite ingresar a la ruta profile sin autenticarse
+const profileAuth = (strategy) => {
+    return async (req, res, next) => {
+        passport.authenticate(strategy, (error, user, info) => {
+            if (error) {
+                return next(error);
+            }
+            if (!user) {
+                return next();
+            }
+            req.user = user;
+            next();
+        })(req, res, next)
+    };
+};
 
 //Autorización según el rol
 const authorization = (...allowedRoles) => { //Acepta multiples roles
@@ -64,5 +78,4 @@ const authorization2 = (role) => {
     }
 };
 
-
-module.exports = { passportCall, authorization, authorization2 };
+module.exports = { passportCall, authorization, authorization2, profileAuth };

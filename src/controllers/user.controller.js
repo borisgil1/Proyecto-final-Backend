@@ -14,6 +14,11 @@ class UserController {
     async registerJwt(req, res) {
         let { first_name, last_name, email, password, age } = req.body;
 
+        if (!first_name || !last_name || !email || !password || !age) {
+            req.logger.error("Faltan datos")
+            return res.status(400).send("Faltan datos");
+        }
+
         try {
             //Verificar si el usuario existe en la bdd
             const existingUser = await UserModel.findOne({ email })
@@ -57,7 +62,7 @@ class UserController {
             //una vez me registro me lleva al perfil
             res.redirect("/profile");
             req.logger.info("Usuario registrado exitosamente")
-
+     
         } catch (error) {
             req.logger.error("Error interno del servidor", error)
             res.status(500).send("Error interno del servidor")

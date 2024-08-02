@@ -2,11 +2,9 @@ MONGO_URL=mongodb+srv://coderhouse:coderhouse@cluster0.2zgtivj.mongodb.net/ecomm
 
 PORT=8080
 
-usuario premium: borisgil1@hotmail.com
-contraseña: 1
+Prueba testing:
 
-usuario user: boris@hotmail.com
-contraseña 1
+Correr el servidor con el puerto 3000 mediante el comando: npm start  
 
-usuario admin admincoder@coder.com
-contraseña 1234
+Luego correr el comando para testing: npm run test
+

@@ -189,3 +189,10 @@ footer p {
 .nequi {
     width: 160px;
 }
+
+/*Footer*/
+.full-screen-image {
+    height: 100%;
+    width: 100%;
+   
+}

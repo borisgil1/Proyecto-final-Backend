@@ -11,7 +11,10 @@ router.get("/", productController.getProducts);
 router.get("/:id", productController.getProductById);
 
 //Agregar productos - Autenticada
-router.get("/", passportCall("jwt", { session: false }), productController.addProduct);
+//router.post("/", passportCall("jwt", { session: false }), productController.addProduct);
+
+//Agregar productos - sin autenticar
+router.post("/", (productController.addProduct));
 
 //Actualizar productos
 router.put("/:id", productController.updateProduct)

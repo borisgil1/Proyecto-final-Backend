@@ -41,7 +41,8 @@ const productSchema = new mongoose.Schema({
     },
     owner: {
         type: String,
-        required: true
+        required: true,
+        default: "admin"
     }
 })
 

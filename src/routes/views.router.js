@@ -4,11 +4,10 @@ const express = require("express");
 const router = express.Router();
 const ViewsController = require("../controllers/views.controller.js");
 const viewsController = new ViewsController
-const passport = require("passport");
-const UserDTO = require("../dto/user.dto.js");
 const { passportCall } = require("../utils/util.js");
 const { authorization } = require("../utils/util.js");
-const {authorization2} = require("../utils/util.js");
+const { authorization2 } = require("../utils/util.js");
+const { profileAuth } = require("../utils/util.js");
 
 //vista products, muestra todos los productos
 router.get("/products", passportCall("jwt"), authorization2("admin"), viewsController.renderProducts);
@@ -41,7 +40,7 @@ router.get("/realtimeproducts", passportCall("jwt"), authorization("admin", "pre
 router.get("/contact", viewsController.contact);
 
 //Vista profile
-router.get("/profile", passportCall("jwt", { session: false }), viewsController.profile);
+router.get("/profile", profileAuth("jwt", { session: false }), viewsController.profile);
 
 //Vista purchase
 router.get("/purchase", viewsController.purchase);
@@ -58,11 +57,7 @@ router.get("/confirmation", viewsController.confirmation);
 //Carrito si no está logeado
 router.get("/carts", viewsController.cartError);
 
-//A esta ruta hay ponerle un DTO para que solo mande nombre, apellido y rol
-router.get("/current", passportCall("jwt"), (req, res) => {
-    const userDto = new UserDTO(req.user.first_name, req.user.last_name, req.user.role);
-    const isAdmin = req.user.role === 'admin';
-    res.send(("profile", { Usuario: userDto, isAdmin }));
-})
+// //A esta ruta hay ponerle un DTO para que solo mande nombre, apellido y rol
+router.get("/current", passportCall("jwt"), viewsController.current);
 
 module.exports = router;
