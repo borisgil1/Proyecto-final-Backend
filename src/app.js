@@ -11,6 +11,7 @@ const passport = require("passport");
 const nodemailer = require("nodemailer");// Permite reliazar el envio de mensajería desde nuestra app
 const swaggerUiExpress = require("swagger-ui-express");//Genera una interfaz grafica para ver toda la documentación.
 const swaggerJSDoc = require("swagger-jsdoc"); //Permite escribir la configuración en un archivo.yaml
+const dotenv = require("dotenv");
 
 //Importación de rutas
 const productsRouter = require("./routes/products.router.js");
@@ -28,14 +29,15 @@ const productRepository = new ProductRepository();
 require("./database.js");
 const initializePassport = require("./config/passport.config.js");
 const configObject = require("./config/config.js");
-const {port} = configObject;
 
 // Middleware y utilidades
 const errorMiddleware = require("./middleware/error.js");
 const { addLogger } = require("./utils/logger.js");
+const { default: mongoose } = require("mongoose");
 
 // Configuración de la aplicación
 const app = express();
+dotenv.config(); // Carga variables de entorno
 app.engine("handlebars", exphbs.engine());
 app.set("view engine", "handlebars");
 app.set("views", "./src/views");
@@ -96,9 +98,13 @@ app.get("/loggertest", (req, res) => {
 });
 
 // Configuración del servidor
-const httpServer = app.listen(port, () => {
-    console.log(`Listening on port ${port}`);
-});
+dotenv.config(); // Carga variables de entorno
+const PORT = process.env.PORT || 8080;
+const connection = mongoose.connect(process.env.MONGO_URL);
+
+const httpServer = app.listen(PORT, () => {
+    console.log(`Listening on port ${PORT}`);
+})
 
 // Configuración de Socket.io
 const io = socket(httpServer);
