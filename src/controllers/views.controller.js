@@ -4,15 +4,20 @@ const ProductsModel = require("../models/products.model.js");
 const cartRepository = new CartRepository();
 const UserDTO = require("../dto/user.dto.js");
 const { addLogger } = require("../utils/logger.js");
+const UserController = require("./user.controller.js");
+const userController = new UserController();
+const UserModel = require("../models/user.model.js");
+
 
 
 //Vista productos
 class viewsController {
     async renderProducts(req, res) {
         const page = parseInt(req.query.page) || 1;
-        const limit = 9;
+        const limit = 9; //Productos por pagina
         try {
             const products = await ProductsModel.paginate({}, { limit, page });
+            //Lista de productos en la página actual. .map, transforma cada producto en lista
             const final = products.docs.map(products => {
                 const { _id, ...rest } = products.toObject();
                 return { _id, ...rest };
@@ -154,7 +159,7 @@ class viewsController {
         const isAdmin = req.user.role === 'admin';
         const isPremium = req.user.role === 'premium';
         res.render("profile", { user: userDto, isAdmin, isPremium, isUser });
-    }
+    };
 
     async purchase(req, res) {
         const { codigo, comprador, fecha, total } = req.query;
@@ -164,7 +169,39 @@ class viewsController {
             comprador,
             fecha,
             total
-        });
+        })
+    };
+
+    async usersView(req, res) {
+
+        try {
+      
+        //Obtengo todos los usuarios
+       const users = await userController.getUsers();
+
+        //const users = await UserModel.find().lean();
+
+       
+        //const users = await UserModel.find();
+       
+        //Creo un DTO para cada usuario
+        // const usersDto = users.map(user => new UserDTO (
+        //             user.first_name,
+        //             user.last_name,
+        //             user.role,
+        //             user.email
+        //         ));
+
+        // Renderizar la vista con la lista de usuarios y la información del usuario actual
+        //res.render("users-list", { user: usersDto }); 
+
+        res.render("users-list", { users }); 
+        
+        //console.log("Se encontraron " + usersDto.length + " usuarios", {usersDto});
+        } catch (error) {
+            //res.status(500).send("Error al mostrar los usuarios");
+            console.log(error);
+        }
     };
 }
 

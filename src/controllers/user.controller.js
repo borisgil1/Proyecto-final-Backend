@@ -9,6 +9,7 @@ const EmailManager = require("../service/email.js");
 const emailManager = new EmailManager();
 const { generateResetToken } = require("../utils/resetoken.js");
 
+
 class UserController {
     //Registro con JWT
     async registerJwt(req, res) {
@@ -62,7 +63,7 @@ class UserController {
             //una vez me registro me lleva al perfil
             res.redirect("/profile");
             req.logger.info("Usuario registrado exitosamente")
-     
+
         } catch (error) {
             req.logger.error("Error interno del servidor", error)
             res.status(500).send("Error interno del servidor")
@@ -235,38 +236,95 @@ class UserController {
     }
 
     //Cambio de rol del usario
-    async changeRole(req, res) {
-        const { uid } = req.params;{}
+    async changeRole(uid, req, res) {
+        //const { uid } = req.params;
         try {
 
             //Busco el usuario por email
             const user = await UserModel.findById(uid);
-           
+
             //Valido que el usuario exista
             if (!user) {
                 logger.error(`Usuario con UID ${uid} no encontrado`);
-                return res.status(404).json({ message: "Usuario no encontrado" });
+                return null;
             }
-          
+
             //Si el usario existe y es user lo cambio a premium 
             if (user.role === "usuario") {
                 user.role = "premium";
 
-            //Si es premium lo cambio a user
+                //Si es premium lo cambio a user
             } else if (user.role === "premium") {
                 user.role = "usuario";
             }
 
+            else if (user.role === "admin") {
+                //return res.status(400).json({ message: "No se puede cambiar el rol de un usuario administrador" });
+            }
+
             await user.save();
 
-            req.logger.info({ message: "Se cambió el rol correctamente a " + user.role, user: user });
-            return res.json({ message: "Se cambió el rol correctamente a " + user.role, user: user });
+            logger.info({ message: "Se cambió el rol correctamente a " + user.role });
+            return { message: "Se cambió el rol correctamente a " + user.role, user: user };
         } catch (error) {
-            req.logger.error("Error en el cambio de rol:", error);
-            return res.status(500).json({ message: "Error interno del servidor" });
+            logger.error("Error cambiar el rol:", error);
+            throw error;
+        }
+    }
+
+    //Obtener todos los usuarios
+    async getUsers(req, res) {
+        try {
+            const users = await UserModel.find().lean();
+            if (!users || users.length === 0) {
+                logger.warning("No se encontraron usuarios");
+                return null;
+            }
+            logger.info("Se obtuvieron los usuarios correctamente", { count: users.length });
+            return users;
+        } catch (error) {
+            logger.error("Error al obtener los usuarios:", error);
+            throw error;
+        }
+    }
+
+   
+    //Eliminar usuarios inactivos en lo sultimos 2 dias
+    async deleteUser(req, res) {
+        try {
+            const id = req.params.uid;
+            console.log("id del usuario", id);
+
+            //Se busca el usuario
+            const user = await UserModel.findById(id);
+
+            console.log("usuario a", id);
+            
+            if (!user) {
+                req.logger.warning("No se encontró el usuario a eliminar");
+                return res.status(404).json({ message: "No se encontró el usuario a eliminar" });
+            }
+
+            //Se elimina el usuario
+           const deletedUser = await UserModel.findByIdAndDelete(id);
+
+            if (!deletedUser) {
+                req.logger.warning(`No se pudo eliminar el usuario con UID: ${id}`);
+                return res.status(500).json({ message: "No se pudo eliminar el usuario" });
+            }
+            req.logger.info(`Usuario eliminado correctamente: ${JSON.stringify(deletedUser.toObject(), null, 2)}`);
+            return res.status(200).json({message: "Se eliminó el usuario correctamente",user: deletedUser});
+        }
+        catch (error) {
+            logger.error("Error al eliminar el usuario:", error);
+           throw error;
         }
     }
 }
+
+
+
+
 
 
 module.exports = UserController;

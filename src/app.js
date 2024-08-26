@@ -24,6 +24,9 @@ const mockingRouter = require("./routes/mocking.js");
 const ProductRepository = require("./repository/product.repository.js");
 const MessagesModel = require("./models/messages.model.js");
 const productRepository = new ProductRepository();
+const UserController = require("./controllers/user.controller.js");
+const userController = new UserController();
+const UserModel = require("./models/user.model.js");
 
 // Base de datos y configuración
 require("./database.js");
@@ -32,7 +35,7 @@ const configObject = require("./config/config.js");
 
 // Middleware y utilidades
 const errorMiddleware = require("./middleware/error.js");
-const { addLogger } = require("./utils/logger.js");
+const { addLogger, logger } = require("./utils/logger.js");
 const { default: mongoose } = require("mongoose");
 
 // Configuración de la aplicación
@@ -117,10 +120,29 @@ io.on("connection", async (socket) => {
     const products = await productRepository.getProducts();
     socket.emit("products", products);
 
+    //Enviar mensaje para renderizar usuarios
+    const users = await UserModel.find();
+    socket.emit("users", users);
+
+    //Recibir evento para elimiar usuarios
+    socket.on("deleteUser", async (uid) => {
+        const deletedUser = await UserModel.findByIdAndDelete(uid);
+        logger.info(`Se eliminó el usuario` + deletedUser);
+        const users = await UserModel.find();
+        //socket.emit("users", await UserModel.findByIdAndDelete(uid));
+        socket.emit("users", users);
+    })
+
+    //Recibir evento para cambiar rol de usuario
+    socket.on("changeRole", async (id) => {
+        await userController.changeRole(id);
+        const users = await UserModel.find();
+        socket.emit("users", users);
+    })
+
     //Recibir evento eliminar producto
     socket.on("deleteProduct", async (pid) => {
         await productRepository.deleteProduct(pid);
-        console.log(pid)
         //Enviamos array actualizado
         socket.emit("products", await productRepository.getProducts());
     })

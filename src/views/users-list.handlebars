@@ -1,0 +1,82 @@
+<style>
+    body {
+        background-color: #f3e5f5;
+        color: #4a148c;
+    }
+
+    h1 {
+        color: #6a1b9a;
+        text-align: center;
+        font-size: 40px;
+        margin-top: 20px;
+    }
+
+    .card {
+        border-radius: 10px;
+        border: 1px solid #6a1b9a;
+        background-color: #ffffff;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        /* Ajusta el ancho máximo de la tarjeta */
+        margin: 20px auto;
+        /* Espacio vertical y centrado horizontal */
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 20px;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-subtitle {
+        font-size: 18px;
+        color: #6a1b9a;
+    }
+
+    .btnDeleteUser,
+    .btnChangeRole {
+        border-radius: 5px;
+        padding: 10px 15px;
+        font-size: 16px;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .btnDeleteUser {
+        background-color: #d32f2f;
+    }
+
+    .btnDeleteUser:hover {
+        background-color: #b71c1c;
+    }
+
+    .btnChangeRole {
+        background-color: #6a1b9a;
+    }
+
+    .btnChangeRole:hover {
+        background-color: #4a148c;
+    }
+</style>
+
+
+
+
+    <h1 class="text-center mb-5">Gestión de Usuarios</h1>
+
+    <div id="users-list"></div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+<script src="js/users.js"></script>
+

@@ -57,7 +57,10 @@ router.get("/confirmation", viewsController.confirmation);
 //Carrito si no está logeado
 router.get("/carts", viewsController.cartError);
 
-// //A esta ruta hay ponerle un DTO para que solo mande nombre, apellido y rol
+//A esta ruta hay ponerle un DTO para que solo mande nombre, apellido y rol
 router.get("/current", passportCall("jwt"), viewsController.current);
+
+//Gestion de usuarios, solo admin
+router.get("/users", passportCall("jwt"), authorization("admin"), viewsController.usersView);
 
 module.exports = router;

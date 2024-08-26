@@ -28,4 +28,10 @@ router.post("/change-password", userController.changePassword);
 //Cambio de rol
 router.put("/premium/:uid", userController.changeRole);
 
+//Eliminar usuario
+router.delete("/:uid", userController.deleteUser);
+
+//Listar usuarios
+router.get("/", userController.getUsers);
+
 module.exports = router;

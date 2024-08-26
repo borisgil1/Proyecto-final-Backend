@@ -70,11 +70,28 @@ h2 {
     margin-top: 20px;
 }
 
-
-
 .btnprimary {
     color: #ffffff !important;
     background-color: #6a1b9a !important;
+}
+
+.btnDeleteUser {
+    color: #ffffff;
+    background-color: #6a1b9a;
+    border-radius: 5px;
+    /* Hace que el botón sea redondeado */
+    padding: 10px 20px;
+    /* Ajusta el relleno para que el botón sea más grande */
+    border: none;
+    /* Elimina el borde */
+    cursor: pointer;
+    /* Cambia el cursor al pasar sobre el botón */
+    transition: background-color 0.3s;
+    /* Agrega una transición suave al cambio de color de fondo */
+
+    /* Hace que el botón sea un bloque */
+   
+    /* Centra el botón horizontalmente */
 }
 
 .btnAddtoCart {
