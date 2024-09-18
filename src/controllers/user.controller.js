@@ -54,6 +54,7 @@ class UserController {
                 email: newUser.email,
                 age: newUser.age,
                 role: newUser.role,
+                cart: newUser.cart,
             }, "coderhouse", { expiresIn: "24h" });
 
             //Enviar token desde una cookie

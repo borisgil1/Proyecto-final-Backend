@@ -23,6 +23,8 @@ class viewsController {
                 return { _id, ...rest };
             })
 
+            console.log("Carrito del usuario:", req.user ? req.user.cart : "Usuario no autenticado");
+
             //Verifico si req.user estpa definido 
             //Paso el user DTO a la vista
             //const userDto = new UserDTO(req.user.first_name, req.user.last_name, req.user.role, req.user.cart, req.user.age);

@@ -1,3 +1,4 @@
+<!-- Vista de productos -->
 <p>Bienvenido, {{user.name}} {{user.last_name}}!</p>
 
 <div class="container main-content">
@@ -6,13 +7,17 @@
         {{#each products}}
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-100">
-                <img class="card-img-top" src="{{this.img}}" alt="">
+                <img class="card-img-top" src="{{this.img}}" alt="Imagen del producto">
                 <div class="card-body">
                     <h4 class="card-title">{{this.title}}</h4>
                     <h5>${{this.price}}</h5>
                     <p class="card-text">{{this.description}}</p>
-                    <form id="addToCartForm_{{this._id}}" action="/api/carts/{{../user.cart}}/products/{{this._id}}" method="POST">
-                        <button type="button" class="btnAddtoCart" onclick="addToCart('{{this._id}}', '{{this.title}}')">Agregar al carrito</button>
+                    <!-- Formulario para agregar al carrito -->
+                    <form id="addToCartForm_{{this._id}}" action="/api/carts/{{../user.cart}}/products/{{this._id}}"
+                        method="POST">
+                        <!-- Botón con evento onclick que llama a la función addToCart -->
+                        <button type="button" class="btnAddtoCart"
+                            onclick="addToCart('{{this._id}}', '{{this.title}}')">Agregar al carrito</button>
                     </form>
                 </div>
             </div>
@@ -21,6 +26,7 @@
     </div>
 </div>
 
+<!-- Paginación -->
 {{#if hasPrevPage}}
 <a href="/products?page={{prevPage}}">Anterior</a>
 {{/if}}
@@ -31,41 +37,50 @@
 
 <p>Página {{currentPage}} de {{totalPages}}</p>
 
+<!-- Carga de librerías y script al final del body -->
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script>
     function addToCart(productId, productName) {
+        // Obtener el formulario basado en el ID del producto
         const form = document.getElementById(`addToCartForm_${productId}`);
         const formData = new FormData(form);
+        const button = form.querySelector('button'); // Desactivar el botón para evitar múltiples envíos
+        button.disabled = true;
 
         fetch(form.action, {
             method: 'POST',
             body: formData
         })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(error => { throw new Error(error.message); });
-            }
-            return response.json();
-        })
-        .then(data => {
-            Toastify({
-                text: `${productName} agregado al carrito`, // Mensaje dinámico con el nombre del producto
-                duration: 3000, // Duración de la alerta en milisegundos
-                close: true,
-                backgroundColor: "linear-gradient(to right, #6a1b9a, #9c27b0)", // Color morado
-                position: 'left', // Posición izquierda
-                gravity: 'bottom' // Alinear en la parte inferior
-            }).showToast();
-        })
-        .catch(error => {
-            Toastify({
-                text: `No puedes agregar tus propios productos al carrito: ${productName}`, // Mensaje dinámico con el nombre del producto
-                duration: 3000, // Duración de la alerta en milisegundos
-                close: true,
-                backgroundColor: "linear-gradient(to right, #ffb74d, #ffa726)", // Color de advertencia (amarillo/naranja)
-                position: 'left', // Posición izquierda
-                gravity: 'bottom' // Alinear en la parte inferior
-            }).showToast();
-        });
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(error => { throw new Error(error.message); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Mostrar notificación de éxito usando Toastify
+                Toastify({
+                    text: `${productName} agregado al carrito`,
+                    duration: 3000,
+                    close: true,
+                    backgroundColor: "linear-gradient(to right, #6a1b9a, #9c27b0)", // Color morado
+                    position: 'left',
+                    gravity: 'bottom' // Alinear en la parte inferior
+                }).showToast();
+            })
+            .catch(error => {
+                // Manejar el error y mostrar una notificación de advertencia
+                Toastify({
+                    text: `No puedes agregar tus propios productos al carrito: ${productName}`,
+                    duration: 3000,
+                    close: true,
+                    backgroundColor: "linear-gradient(to right, #ffb74d, #ffa726)", // Color amarillo/naranja
+                    position: 'left',
+                    gravity: 'bottom'
+                }).showToast();
+            })
+            .finally(() => {
+                button.disabled = false; // Habilitar el botón de nuevo
+            });
     }
 </script>

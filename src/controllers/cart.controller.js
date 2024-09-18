@@ -54,32 +54,34 @@ class cartController {
         const cid = req.params.cid;
         const pid = req.params.pid;
         const quantity = req.body.quantity || 1;
-
-        // Verificamos si hay un carrito en la petición
+    
         if (!cid) {
             req.logger.info("Debes estar logeado para agregar productos al carrito");
             return res.status(400).render("products", { errors: { auth: "Debes estar logeado para agregar productos al carrito" } });
         }
-
+    
         try {
-            //Capturamos el usuario y el producto
             const user = await UserModel.findOne({ cart: cid }).exec();
             const product = await productService.getProductById(pid);
-
-            // Verificamos si el usuario está tratando de agregar su propio producto
-            if (user.email === product.owner) {
-                req.logger.info("No puedes agregar tus propios productos al carrito");
-                return res.status(400).render("products", { errors: { auth: "No puedes agregar tus propios productos al carrito" } });
-            }
-
-            // Agregamos el producto al carrito
-            const cartUpdated = await cartService.addProductToCart(cid, pid, quantity)
+    
+            // Debug: Verifica el correo del usuario y el propietario del producto
+            // console.log("Correo del usuario logueado:", user.email);
+            // console.log("Propietario del producto:", product.owner);
+    
+            // // Si el propietario del producto es el usuario logueado, bloquea la adición
+            // if (user.email === product.owner) {
+            //     req.logger.info("No puedes agregar tus propios productos al carrito");
+            //     return res.status(400).render("products", { errors: { auth: `No puedes agregar tus propios productos al carrito: ${product.title}` } });
+            // }
+    
+            // Si pasa la validación, agrega el producto al carrito
+            const cartUpdated = await cartService.addProductToCart(cid, pid, quantity);
             return res.status(200).json({ message: "Producto agregado al carrito con éxito", cart: cartUpdated });
         } catch (error) {
             req.logger.error("Error al agregar producto al carrito:", error);
             return res.status(500).send("Error al agregar producto al carrito:");
         }
-    };
+    }
 
     //Eliminar producto de carrito
     async deleteProductFromCart(req, res) {

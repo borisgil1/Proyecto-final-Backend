@@ -18,7 +18,6 @@ socket.on("users", (users) => {
                     <div class="card-body">
                         <h4 class="card-title d-flex justify-content-between align-items-center">
                             Nombre: ${user.first_name} ${user.last_name}
-                            id: ${user._id}
                             <button class="btnDeleteUser" data-id="${user._id}">Eliminar Usuario</button>
                         </h4>
                         <h5 class="card-subtitle mb-2">
